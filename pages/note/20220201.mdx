@@ -1,0 +1,324 @@
+export const meta = {
+  title: '【TypeChallenge】 中等难度个人题解（持续更新）',
+  tags: ['TypeScript']
+}
+
+> 题目地址：[GitHub TypeChallenge](https://github.com/type-challenges/type-challenges)
+> TS 在线编辑器：[TypeScript Playground](https://www.typescriptlang.org/play/)
+>
+> [类型挑战中等难度个人题解（一）](https://juejin.cn/post/7019639858402426893)
+> [类型挑战中等难度个人题解（二）](https://juejin.cn/post/7035500518337740830)
+
+#### [AnyOf](https://github.com/type-challenges/type-challenges/blob/master/questions/949-medium-anyof/README.md)
+只要数组中存在真值就返回为真。注意，如果元素是空数组或者空对象，也认为是假值。
+```ts
+// 首先构造出可以判断假值的工具类型
+// 需要注意空对象类型，利用 keyof {} === never 来进行判断
+type FalseType<T> = T extends false | '' | 0 | []
+  ? false
+  : keyof T extends never
+    ? false 
+    : true;
+
+type AnyOf<T extends readonly any[]> = T extends [infer F, ...infer Rest]
+  ? FalseType<F> extends true
+    ? true
+    : AnyOf<Rest>
+  : false;
+```
+
+#### [IsNever](https://github.com/type-challenges/type-challenges/blob/master/questions/1042-medium-isnever/README.md)
+判断是不是`never`
+```ts
+type IsNever<T> = [T] extends [never] ? true : false;
+```
+
+#### [IsUnion](https://github.com/type-challenges/type-challenges/blob/master/questions/1097-medium-isunion/README.md)
+判断是否为联合类型
+```ts
+// 如果T是联合类型，第一个判断就会将其解构分发
+// 这样后续的[OriginType] extends [T]判断就是用的原来的T和解构后单个的类型进行比较
+type IsUnion<T, OriginType = T> = T extends T
+  // 方括号可以禁止这种条件类型中的解构分发
+  ? [OriginType] extends [T]
+    ? false
+    : true
+  : never;
+```
+
+#### [ReplaceKeys](https://github.com/type-challenges/type-challenges/blob/master/questions/1130-medium-replacekeys/README.md)
+将对象联合类型中单个对象指定`key`进行替换，如果提供的替换类型不存在目标`key`，将原对象目标`key`设置为`never`
+```ts
+type ReplaceKeys<UnionTypes, Keys, Target> = UnionTypes extends any
+  ? {
+      // 这两步判断是必须的
+      // 与 Keys 进行判断是为了确认目标 key
+      // 与 keyof Target 判断是为了确认替换类型中有没有目标 key
+      [K in keyof UnionTypes]: K extends Keys
+        ? K extends keyof Target
+          ? Target[K]
+          : never
+        : UnionTypes[K];
+    }
+  : never;
+```
+> 如果联合类型作为泛型参数传入，那么会对其进行解构，在联合类型中单个类型应用该泛型后，用其结果再次进行联合。详情阅读[TS - conditional-types](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types)
+
+#### [DropChar](https://github.com/type-challenges/type-challenges/blob/master/questions/2070-medium-drop-char/README.md)
+将提供的字符串中的每个指定字符全部移除
+```ts
+// 模式匹配，啥都可以匹配
+type DropChar<S extends string, C extends string> = S extends `${infer Prev}${C}${infer After}`
+  ? DropChar<`${Prev}${After}`, C>
+  : S;
+```
+
+#### [Join](https://github.com/type-challenges/type-challenges/blob/master/questions/5310-medium-join/README.md)
+实现数组的join类型工具
+```ts
+type Join<T, U extends string | number> = T extends [infer Result]
+  ? Result
+  : T extends [infer F, ...infer Rest]
+    // 必要的步骤，不然 ts 会报错
+    ? F extends string
+      ? `${F}${U}${Join<Rest, U>}`
+      : never
+    : '';
+```
+
+#### [BEM style string](https://github.com/type-challenges/type-challenges/blob/master/questions/3326-medium-bem-style-string/README.md)
+实现BEM规范的样式类名类型
+```ts
+type BEM<B extends string, E extends string[], M extends string[]> =
+  E extends []
+    ? M extends []
+      // 到这里说明都是空数组，直接返回 B
+      ? B
+      // 到这里说明只需要将 B 和 M 进行组合
+      : M[number] extends string ? `${B}--${M[number]}` : never
+    // 到这里说明起码 E 有元素，所以就先将 B E 组合起来，再将 B__E 作为新的 B 传下去
+    : BEM<E[number] extends string ? `${B}__${E[number]}` : never, [], M>
+```
+
+#### [Unique](https://github.com/type-challenges/type-challenges/blob/master/questions/5360-medium-unique/README.md)
+实现去重的类型
+```ts
+// [1, 2, 3, 3][number] === 1 | 2 | 3
+// 需要注意一点，应该优先从后面去掉重复性元素
+type Unique<T extends unknown[]> = T extends [...infer Rest, infer E]
+  ? E extends Rest[number]
+    ? Unique<Rest>
+    : [...Unique<Rest>, E]
+  : [];
+```
+
+#### [Tuple to Nested Object](https://github.com/type-challenges/type-challenges/blob/master/questions/3188-medium-tuple-to-nested-object/README.md)
+将元组转为嵌套对象，元组中元素为对象属性的路径，`[1, 2, 3] => { 1: { 2: { 3: type } } }`
+```ts
+// 既然 T 是路径，U 是类型，那就从最里层进行组装，然后作为外一层的类型传出去
+type TupleToNestedObject<T, U> = T extends string[]
+  ? T extends [...infer Prev, infer L]
+    ? L extends string
+      ? TupleToNestedObject<Prev, { [K in L]: U }>
+      : U
+    : U
+  : U;
+```
+
+#### [StartsWith](https://github.com/type-challenges/type-challenges/blob/master/questions/2688-medium-startswith/README.md)
+判断一个字符串字面量类型是否以第二个类型开始
+```ts
+type StartsWith<T extends string, U extends string> = T extends `${U}${infer Rest}` ? true : false;
+```
+
+#### [EndsWith](https://github.com/type-challenges/type-challenges/blob/master/questions/2693-medium-endswith/README.md)
+```ts
+type EndsWith<T extends string, U extends string> = T extends `${infer Prev}${U}` ? true : false;
+```
+
+#### [Without](https://github.com/type-challenges/type-challenges/blob/master/questions/5117-medium-without/README.md)
+在数组 T 中排除指定的所有元素
+```ts
+type Without<T extends unknown[], U> = T extends [infer E, ...infer Rest]
+  ? E extends (U extends unknown[] ? U[number] : U)
+    ? Without<Rest, U>
+    : [E, ...Without<Rest, U>]
+  : [];
+```
+
+#### [Chunk](https://github.com/type-challenges/type-challenges/blob/master/questions/4499-medium-chunk/README.md)
+实现chunk，将数组T进行分片，每一片的长度小于等于N
+```ts
+// 使用 R 作为结果数组，来接受完成分配的每一片
+// 使用 C 来保存中间分配结果，每次判断 C['length'] 是否等于 N，等于就将该分片放入结果内，并且新开一个分片数组
+type Chunk<T extends unknown[], N extends number, R extends unknown[] = [], C extends unknown[] = []> =
+  T extends [infer E, ...infer Rest]
+    ? C['length'] extends N
+      ? Chunk<Rest, N, [...R, C], [E]>
+      : Chunk<Rest, N, R, [...C, E]>
+    // 将源数组分配完了需要在检测一下剩下的分片数组长度，有长度就直接放入结果就行
+    : C['length'] extends 0
+      ? R
+      : [...R, C];
+```
+
+#### [Zip](https://github.com/type-challenges/type-challenges/blob/master/questions/4471-medium-zip/README.md)
+将T和U两个数组按照最短的数组进行一对一的组合，形成一个新的数组（会抛弃掉多余的元素）
+压缩分配步骤：
+1. 判断T是否还有剩余元素，没有就直接返回结果
+2. 判断U是否还有剩余元素，没有就返回结果
+3. 都有剩余元素就将`[T[0], U[0]]`放入结果，即下面的`[TE, UE]`
+```ts
+type Zip<T extends unknown[], U extends unknown[]> = 
+  T extends [infer TE, ...infer TRest]
+    ? U extends [infer UE, ...infer URest]
+      ? [[TE, UE], ...Zip<TRest, URest>]
+      : []
+    : [];
+```
+
+#### [Trunc](https://github.com/type-challenges/type-challenges/blob/master/questions/5140-medium-trunc/README.md)
+将数字的小数部分移出。
+```ts
+type Trunc<V extends string | number> = `${V}` extends `${infer Int}.${number}` ? Int : `${V}`;
+```
+
+#### [Mutable](https://github.com/type-challenges/type-challenges/blob/master/questions/2793-medium-mutable/README.md)
+将只读对象变为可变对象
+```ts
+type Mutable<T> = {
+  // -readonly 就是去掉readonly这个修饰符，同样的 -? 就是去掉可选修饰符
+  -readonly [K in keyof T]: T[K];
+}
+```
+
+#### [Reverse](https://github.com/type-challenges/type-challenges/blob/master/questions/3192-medium-reverse/README.md)
+实现类似数组的reverse类型
+```ts
+type Reverse<T extends unknown[]> = T extends [infer E, ...infer Rest]
+  ? [...Reverse<Rest>, E]
+  : [];
+```
+
+#### [FlipArguments](https://github.com/type-challenges/type-challenges/blob/master/questions/3196-medium-flip-arguments/README.md)
+将函数参数reverse后形成一个新函数
+```ts
+// 需要借助上面实现的Reverse<T>
+type FlipArguments<T> = T extends (...args: infer Args) => infer R
+  ? ((...args: Reverse<Args>) => R)
+  : never;
+```
+
+#### [MapTypes](https://github.com/type-challenges/type-challenges/blob/master/questions/5821-medium-maptypes/README.md)
+将目标对象中的指定类型替换为`R['mapTo']`的类型
+```ts
+// 需要注意，R可能是联合类型，所以就不能在结果体里面进行extends判断
+// 因为在结果体里面使用extends判断会将联合类型解构，这样就导致最终结果始终会多几个类型出来
+type MapTypes<T, R extends Record<'mapFrom' | 'mapTo', unknown>> = {
+  [K in keyof T]: T[K] extends R['mapFrom']
+    ? R extends { mapFrom: T[K] }
+      ? R['mapTo']
+      : never
+    : T[K]
+}
+
+// ====== 错误实现 =======
+// 原本的实现，当R是联合类型时，这个实现有一个case跑不过
+type MapTypes<T, R> = {
+  // 就在这一步，R的联合类型会导致这里进行解构一次。有几个联合类型就相当于会单独走几遍这个判断逻辑
+  [K in keyof T]: R extends { mapFrom: infer From; mapTo: infer To }
+    ? T[K] extends From
+      ? R extends { mapFrom: T[K] }
+        ? To
+        : never
+      : T[K]
+    : never;
+}
+```
+
+#### [PercentageParser](https://github.com/type-challenges/type-challenges/blob/master/questions/1978-medium-percentage-parser/README.md)
+将字符串中的`+` `-` `数字` `%`提取组成一个数组返回。
+```ts
+type GetOperator<S extends string> = S extends `${infer F}${infer R}`
+  ? F extends '+' | '-'
+    ? F
+    : ''
+  : '';
+type GetPercentChar<S extends string> = S extends `${infer P}%` ? '%' : '';
+type Parser<S extends string, Op extends string, Per extends string> = 
+  S extends `${Op}${infer N}${Per}`
+    ? [Op, N, Per]
+    : never;
+type PercentageParser<S extends string> = Parser<S, GetOperator<S>, GetPercentChar<S>>;
+```
+
+#### [PickByType](https://github.com/type-challenges/type-challenges/blob/master/questions/2595-medium-pickbytype/README.md)
+根据指定的类型进行pick操作。
+```ts
+// 先构建一个类型获取所有符合目标类型的key集合
+type PickKeys<T, U, K> = K extends keyof T
+  ? T[K] extends U
+    ? K
+    : never
+  : never
+type PickByType<T, U> = {
+  [K in PickKeys<T, U, keyof T>]: T[K]
+}
+```
+
+#### [ObjectEntries](https://github.com/type-challenges/type-challenges/blob/master/questions/2946-medium-objectentries/README.md)
+实现`Object.entries`类型，需要忽略掉`T`中的可选值带来的`undefined`
+```ts
+type ObjectEntries<T, K = keyof T> = K extends keyof T
+  ? [K, Required<T>[K]]
+  : never;
+```
+
+#### [Shift](https://github.com/type-challenges/type-challenges/blob/master/questions/3062-medium-shift/README.md)
+```ts
+type Shift<T> = T extends [infer E, ...infer Rest] ? Rest : never
+```
+
+#### [IndexOf](https://github.com/type-challenges/type-challenges/blob/master/questions/5153-medium-indexof/README.md)
+实现indexOf类型，思路是按顺序取，和`U`不匹配就下一个，匹配就返回之前不匹配的数组长度
+```ts
+type IndexOf<T extends unknown[], U, V extends unknown[] = []> = 
+  T extends [infer E, ...infer Rest]
+    ? E extends U
+      ? V['length']
+      : IndexOf<Rest, U, [...V, E]>
+    : -1
+```
+
+#### [LsatIndexOf](https://github.com/type-challenges/type-challenges/blob/master/questions/5153-medium-indexof/README.md)
+和`IndexOf`同理
+```ts
+type LastIndexOf<T extends unknown[], U, V extends unknown[] = []> = 
+  T extends [...infer Prev, infer E]
+    ? E extends U
+      ? Prev['length']
+      : LastIndexOf<Prev, U, [...V, E]>
+    : -1
+```
+
+#### [Permutation](https://github.com/type-challenges/type-challenges/blob/master/questions/296-medium-permutation/README.md)
+实现排列组合类型。
+`Permutation<'A' | 'B' | 'C'> === ['A', 'B', 'C'] | ['A', 'C', 'B'] | ['B', 'A', 'C'] | ['B', 'C', 'A'] | ['C', 'A', 'B'] | ['C', 'B', 'A']`
+```ts
+type Permutation<T, V = T> = [T] extends [never]
+  ? []
+  : T extends T
+    ? [T, ...Permutation<Exclude<V, T>>]
+    : never;
+
+思路如下：
+1. 首先将 A B C 分开，利用联合类型在条件判断中会被解构可以得到：
+type T = A | B | C;
+T extends T ? [T] : never; // [A] | [B] | [C]
+这里就会发现已经得到了三分之一的开头序列，剩下的就是想办法再每一个里面将剩下的两个进行排列
+比如在第一个中，如果我们能够将 B 和 C 再次进行类似的操作，就可以得到 [A, B] 和 [A, C]
+类似的再继续下去就可以完成第一组的排列了。
+```
+
+> 特别的，在数组中对一个联合数组类型进行解构，可以将视为对联合类型中每一个数组进行解构，然后再联合起来。
+> 就像这样：`[1, ...([2] | [3])] === [1, 2] | [1, 3]`

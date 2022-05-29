@@ -1,0 +1,150 @@
+export const meta = {
+  title: '使用react-dnd实现一个sortable组件',
+  tags: ['React', 'React-Dnd'],
+}
+
+> 最近需要用到拖拽排序，就接触了react-dnd这个拖拽库，并实现一个简单的`Sortable`组件
+> ![](../images/dance.gif)
+
+## react-dnd
+
+`react-dnd`是基于`dnd-core`封装实现的一个react库，其主要关注的是拖拽的数据，而不是拖拽的页面组件。`dnd-core`利用`redux`去做了一层数据管理，它只关心数据；然后将拖拽的视图与事件抽离为`backend`，常用的就是`HTML5Backend`。
+
+`react-dnd`有两种使用方式：`高阶组件` `Hooks`
+
+> 不同版本之间的api可能有所不同，但基本上含义是一致的。
+
+### DndProvider
+
+这个provider接受一个backend，表明这个拖拽组件是使用哪种环境的拖拽实现，目前官方有`backend-html5`和`backend-touch`实现，对应按照传入就行。
+
+### Type & Item
+
+`type`是一个字符串，用于标记当前拖动的项目能否被正确放置，在drop的时候，只有相同的`type`才能被放置；`item`是一个普通对象，描述拖拽的数据，比如`{ id, index }`之类的，
+
+### DragSource & DropTarget
+
+用于标记用于drag、preview、drop的高阶组件，都接受一个`type` `spec` `collect`：
+
+- `type`：上面说的字符串，同一个拖拽组件必须相同
+- `spec`：在`DragSource`侧是描述拖动的数据对象`item`以及一些drag动作的处理、在`DropTarget`侧是描述拖动的对象经过未拖动对象（hover）以及drop动作的一些处理。
+- `collect`：是一个函数，返回值为一个对象，该对象会被注入组件的props中，用于收集拖拽过程中的一些状态，比如利用这个注入当前拖动组件的拖动状态`isDragging`以及相关的connector
+
+这两个方法会返回一个函数，这个函数才是真正的高阶组件函数，同时需要在`collect`中其参数中获取dragConnector/dropConnector/previewConnector（从`collect`参数中的`monitor`中获取）。需要注意，这些connector只接受普通的dom，不接受React组件 -_-。
+
+### useDrag & useDrop
+
+最新版本的`react-dnd`文档已经主推hook的方式了，和高阶组件其实差别不大。一个稍微比较显著的优化是不需要在显示的调用connect方法去标记拖拽的元素了，hook会返回对应的ref，只需要将ref提供到指定的dom上就可以，同时也不会通过props注入的方式来提供`collected`的状态
+
+- `useDrag`：接受的参数和高阶组件基本上一致，会返回`collected` `dragRef` `previewRef`
+- `useDrop`：会返回`collected` `dropRef`
+
+> 如果`drag` `preview` `drop`都是同一个元素的话，可以自己手动在组件内部声明一个ref，然后将这个ref作为参数传递给`drag` `preview` `drop`中，再将ref给指定的dom就行
+
+## Sortable
+### Draggable组件
+
+先实现一个`Dragable`组件
+
+```js
+function Draggable({ index, id, children, onSort, onCancel, onDrop }) {
+  const containerRef = React.useRef();
+
+  const [collected, drag, perview] = useDrag(() => {
+    return {
+      type: 'item',
+      item: { id, index },
+      collect: (monitor) => ({
+        // 获取拖动状态，拖动的节点会简单修改一下样式
+        isDragging: monitor.isDragging(),
+      }),
+    };
+  }, [id, index]);
+
+  const [_, drop] = useDrop(() => {
+    return {
+      accept: 'item',
+      hover: (dragItem, monitor) => {
+        if (dragItem.id === id) {
+          return;
+        }
+        const dragItemOffsetY = monitor.getClientOffset().y;
+        const hoverItemSize = containerRef.current.getBoundingClientRect();
+        const hoverItemOffsetMiddle = ~~(
+          (hoverItemSize.top + hoverItemSize.height) /
+          2
+        );
+        // 超过一半的高度再执行临时的交换，onSort是组件内部实现的临时交换的方法
+        // 在有效的drop触发后会将最新的排序列表通过事件传递出去
+        if (dragItemOffsetY > hoverItemOffsetMiddle) {
+          onSort(dragItem.id, index);
+        } else {
+          onSort(id, dragItem.index);
+        }
+      },
+      drop: () => {
+        // 在这里进行drop的有效性检查，比如放置点是不是拖动起点、放置的位置是否超出组件外部等
+        // 有效的drop会触发onDrop事件
+      }
+    };
+  }, [id, index, onSort]);
+
+  const opacity = collected.isDragging ? 0.5 : 1;
+
+  drop(perview(containerRef));
+
+  return (
+    <div style={{ opacity }} ref={containerRef}>
+      // 指定一个元素用于拖动
+      <div ref={drag}/>
+      {children}
+    </div>
+  );
+}
+```
+
+### Sortable组件
+
+再顺势实现Sortable组件
+
+```js
+function Sortable({ list, onDrop }) {
+  // 内部储存一份，用于临时交换顺序
+  const [innerList, setInnerList] = React.useState(list);
+
+  React.useEffect(() => {
+    setInnerList(list);
+  }, [list]);
+
+  // 处理拖动中成功触发的sort事件，然后就进行一次内部排序操作，这样在视图上就会实时显示顺序
+  const handleSort = React.useCallback(
+    (id, toIndex) => {
+      const targetItemIndex = innerList.findIndex((item) => item.id === id);
+      const targetItem = innerList[targetItemIndex];
+      const newInnerList = [...innerList];
+      newInnerList.splice(targetItemIndex, 1);
+      newInnerList.splice(toIndex, 0, targetItem);
+      setInnerList(newInnerList);
+    },
+    [innerList]
+  );
+
+  // 在Draggable组件正确触发onDrop后将内部最新的排序列表传出去就行
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      {innerList.map(({ id, label }, index) => {
+        return (
+          <Draggable key={id} id={id} index={index} onSort={handleSort}>
+            {label}
+          </Draggable>
+        );
+      })}
+    </DndProvider>
+  );
+}
+```
+
+这样一个简易的Sortable组件就好了，只是没有拖拽的动效，极其生硬...
+
+![](../images/sortable.gif)
