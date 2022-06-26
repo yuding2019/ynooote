@@ -19,7 +19,7 @@ const App = ({ Component, pageProps }) => {
   const [showBack, setShowBack] = useState(false);
 
   useEffect(() => {
-    setShowBack(router.pathname === '/');
+    setShowBack(router.pathname !== '/');
   }, [router.pathname]);
 
   const handleBack = () => {
