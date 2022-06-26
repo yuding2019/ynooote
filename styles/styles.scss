@@ -60,11 +60,5 @@ body ul, body li {
 }
 
 *::selection {
-  background-color: $n500;
-  color: $n0;
-}
-
-code {
-  font-family: 'JetBrains Mono', monospace, 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 13px;
+  background-color: $n50;
 }

@@ -1,0 +1,60 @@
+@import '../../styles/common.scss';
+
+.blockquote {
+  @extend .br08;
+  border: 1px solid $b50;
+  padding: 16px;
+  overflow: hidden;
+  position: relative;
+  margin: 8px 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: $b50;
+  }
+
+  &:hover {
+    border-color: $b300;
+  }
+
+  &:hover::before {
+    background-color: $b300;
+  }
+}
+
+.code {
+  @extend .br16;
+  margin: 2px;
+  padding: 2px 8px;
+  background-color: $b300;
+  color: $n0;
+  font-family: 'JetBrains Mono', 'Microsoft YaHei', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 13px;
+
+  &::selection {
+    background-color: transparent;
+  }
+}
+
+.pre {
+  @extend .br08;
+  padding: 16px;
+  border: 1px solid $n50;
+  margin: 8px 0;
+  font-family: 'JetBrains Mono', 'Microsoft YaHei', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+
+  &:hover {
+    border-color: $n100;
+  }
+}
+
+.p {
+  line-height: 1.5;
+}

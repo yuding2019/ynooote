@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import zhCN from 'dayjs/locale/zh-cn';
 
 import GlobalHeader from '../components/GlobalHeader';
+import MDXCompoents from '../components/MDXCompoents';
 
 import styles from './_app.module.scss';
 import '../styles/styles.scss';
@@ -21,7 +22,7 @@ const App = ({ Component, pageProps }) => {
   }
   
   const pageComponent = Component.name === MDX_PAGE_COMPONENT_NAME
-    ? <Component {...pageProps} />
+    ? <Component {...pageProps} components={MDXCompoents} />
     : <Component {...pageProps} />;
 
   return (
