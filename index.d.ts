@@ -5,3 +5,7 @@ declare module '*.module.scss' {
 
   export default styles;
 }
+
+declare interface NoteInfoObject {
+  
+}

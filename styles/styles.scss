@@ -10,6 +10,7 @@ html, body {
   height: 100vh;
   margin: 0;
   padding: 0;
+  font-family: 'Microsoft YaHei', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 body * {
@@ -64,6 +65,6 @@ body ul, body li {
 }
 
 code {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', monospace, 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 13px;
 }

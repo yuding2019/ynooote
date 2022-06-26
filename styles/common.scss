@@ -84,5 +84,11 @@ $n500: #02141b;
 $n600: #000;
 
 .shadow1 {
-  box-shadow: 0 0 4px 4px $n50;
+  box-shadow: 0 0 4px 2px $b50;
+}
+
+.flexCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

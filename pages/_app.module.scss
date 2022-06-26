@@ -6,22 +6,16 @@
   overflow: hidden;
 }
 
-.header {
-  @extend .shadow1;
-  width: 100%;
-  height: 60px;
-}
-
 .contentWrap {
   width: 100%;
-  height: calc(100vh - 60px);
+  height: 100%;
   padding-bottom: 32px;
   overflow: auto;
+  position: relative;
 }
 
 .content {
-  width: 980px;
+  width: 960px;
   margin: 0 auto;
-  padding: 0 120px;
-  padding-top: 16px;
+  padding-top: 32px;
 }

@@ -2,7 +2,6 @@ const Fs = require("fs");
 const Path = require("path");
 
 const dayjs = require("dayjs");
-const { partition } = require('lodash');
 
 const Git = require('./git');
 
