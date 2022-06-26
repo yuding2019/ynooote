@@ -24,6 +24,7 @@ const App = ({ Component, pageProps }) => {
   const pageComponent = Component.name === MDX_PAGE_COMPONENT_NAME
     ? <Component {...pageProps} components={MDXCompoents} />
     : <Component {...pageProps} />;
+  console.log(Component, MDXCompoents, pageProps);
 
   return (
     <section className={styles.wrap}>
