@@ -113,9 +113,9 @@ function build() {
   const manifest = readManifest();
   const changedFiles = Git.getFileChangeInfos();
   for (const file of changedFiles) {
-    const { filePath, oldFilePath } = file;
+    const { filePath, oldFilePath = '' } = file;
     const old = manifest.find((item) => {
-      return item.path.includes(filePath) || item.path.includes(oldFilePath);
+      return  filePath.includes(item.path) || oldFilePath.includes(item.path);
     });
     if (!old) {
       manifest.push(createManifestItem(filePath));
@@ -123,6 +123,7 @@ function build() {
       updateManifestItem(old, file);
     }
   }
+  console.log(manifest);
   writeManifest(JSON.stringify(manifest));
 
   process.env.IN_PRE_COMMIT = true;
