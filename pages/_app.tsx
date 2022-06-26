@@ -8,6 +8,7 @@ import MDXCompoents from '../components/MDXCompoents';
 
 import styles from './_app.module.scss';
 import '../styles/styles.scss';
+import { useEffect, useState } from 'react';
 
 dayjs.locale(zhCN);
 
@@ -15,7 +16,11 @@ const MDX_PAGE_COMPONENT_NAME = 'MDXContent';
 
 const App = ({ Component, pageProps }) => {
   const router = useRouter();
-  const isInHomePage = router.pathname === '/';
+  const [showBack, setShowBack] = useState(false);
+
+  useEffect(() => {
+    setShowBack(router.pathname === '/');
+  }, [router.pathname]);
 
   const handleBack = () => {
     router.replace('/');
@@ -24,7 +29,6 @@ const App = ({ Component, pageProps }) => {
   const pageComponent = Component.name === MDX_PAGE_COMPONENT_NAME
     ? <Component {...pageProps} components={MDXCompoents} />
     : <Component {...pageProps} />;
-  console.log(Component, MDXCompoents, pageProps);
 
   return (
     <section className={styles.wrap}>
@@ -34,7 +38,7 @@ const App = ({ Component, pageProps }) => {
 
       <GlobalHeader />
       <div className={styles.contentWrap}>
-        {!isInHomePage && (
+        {showBack && (
           <div className={styles.back} onClick={handleBack}>返回列表</div>
         )}
         <div className={styles.content}>
