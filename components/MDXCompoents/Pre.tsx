@@ -33,7 +33,7 @@ const Pre: FC<MDXComponentProps> = (props) => {
       {
         ({ className, tokens, getLineProps, getTokenProps }) => {
           return (
-            <pre className={classNames(className, styles.pre)}>
+            <pre className={classNames(className, "pre")}>
               {tokens.map((line, i) => {
                 const lineProps = getLineProps({ line, key: i });
     

@@ -8,6 +8,8 @@ import MDXCompoents from '../components/MDXCompoents';
 
 import styles from './_app.module.scss';
 import '../styles/styles.scss';
+import '../components/MDXCompoents/index.scss';
+
 import { useEffect, useState } from 'react';
 
 dayjs.locale(zhCN);
