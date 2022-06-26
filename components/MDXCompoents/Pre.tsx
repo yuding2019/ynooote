@@ -41,7 +41,7 @@ const Pre: FC<MDXComponentProps> = (props) => {
                   <div key={i} {...lineProps}>
                     {line.map((token, key) => {
                       const toeknProps = getTokenProps({ token, key });
-              
+
                       return (
                         <span key={key} {...toeknProps} style={{ ...toeknProps.style, fontStyle: '' }} />
                       );

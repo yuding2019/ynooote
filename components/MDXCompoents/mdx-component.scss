@@ -2,11 +2,11 @@
 
 .blockquote {
   @extend .br08;
-  border: 1px solid $b50;
+  border: 1px solid $b100;
   padding: 16px;
   overflow: hidden;
   position: relative;
-  margin: 8px 0;
+  margin: 16px 0;
 
   &::before {
     content: '';
@@ -15,7 +15,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background-color: $b50;
+    background-color: $b100;
   }
 
   &:hover {
@@ -24,6 +24,10 @@
 
   &:hover::before {
     background-color: $b300;
+  }
+
+  .p {
+    white-space: pre-line;
   }
 }
 
@@ -57,4 +61,44 @@
 
 .p {
   line-height: 1.5;
+}
+
+.header {
+  font-weight: 500;
+  margin-top: 16px;
+
+  &.h1 {
+    font-size: 26px;
+  }
+
+  &.h2 {
+    font-size: 24px;
+  }
+
+  &.h3 {
+    font-size: 22px;
+  }
+
+  &.h4 {
+    font-size: 20px;
+  }
+
+  &.h5 {
+    font-size: 18px;
+  }
+
+  &.h6 {
+    font-size: 16px;
+  }
+}
+
+.link {
+  color: $b600;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+
+  &:hover {
+    background-color: $b600;
+    color: $n0;
+  }
 }
