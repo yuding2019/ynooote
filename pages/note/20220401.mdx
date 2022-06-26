@@ -1,7 +1,9 @@
+import MDXPageLayout from '../../components/MDXCompoents';
+
 export const meta = {
   title: '使用React-Dnd实现一个sortable组件',
   tags: ['React', 'React-Dnd'],
-}
+};
 
 > 最近需要用到拖拽排序，就接触了react-dnd这个拖拽库，并实现一个简单的`Sortable`组件
 > ![](../images/dance.gif)
@@ -148,3 +150,5 @@ function Sortable({ list, onDrop }) {
 这样一个简易的Sortable组件就好了，只是没有拖拽的动效，极其生硬...
 
 ![](../images/sortable.gif)
+
+export default ({ children }) => <MDXPageLayout>{children}</MDXPageLayout>

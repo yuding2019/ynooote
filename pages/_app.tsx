@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import zhCN from 'dayjs/locale/zh-cn';
 
 import GlobalHeader from '../components/GlobalHeader';
-import MDXCompoents from '../components/MDXCompoents';
 
 import styles from './_app.module.scss';
 import '../styles/styles.scss';
@@ -13,8 +12,6 @@ import '../components/MDXCompoents/index.scss';
 import { useEffect, useState } from 'react';
 
 dayjs.locale(zhCN);
-
-const MDX_PAGE_COMPONENT_NAME = 'MDXContent';
 
 const App = ({ Component, pageProps }) => {
   const router = useRouter();
@@ -27,10 +24,6 @@ const App = ({ Component, pageProps }) => {
   const handleBack = () => {
     router.replace('/');
   }
-  
-  const pageComponent = Component.name === MDX_PAGE_COMPONENT_NAME
-    ? <Component {...pageProps} components={MDXCompoents} />
-    : <Component {...pageProps} />;
 
   return (
     <section className={styles.wrap}>
@@ -44,7 +37,7 @@ const App = ({ Component, pageProps }) => {
           <div className={styles.back} onClick={handleBack}>返回列表</div>
         )}
         <div className={styles.content}>
-          {pageComponent}
+          <Component {...pageProps} />
         </div>
       </div>
     </section>
