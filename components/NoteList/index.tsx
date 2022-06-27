@@ -25,6 +25,9 @@ const NoteList: React.FC<NoteListProps> = (props) => {
           <span className={styles.title}>{title}</span>
           <span className={styles.time}>最近更新时间：{updateTime || createTime}</span>
         </header>
+        <div className={styles.createTime}>
+          创建时间：{createTime}
+        </div>
         <div className={styles.tagWrap}>
           {tags?.map((tag) => <span key={tag} className={styles.tag}>{tag}</span>)}
         </div>
