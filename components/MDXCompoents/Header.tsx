@@ -1,12 +1,11 @@
-import { FC } from "react";
+import { FC, cloneElement } from "react";
 
 import { MDXComponentProps } from "./types";
 
 const Header: FC<MDXComponentProps & { level: number }> = (props) => {
-  const Tag = `h${props.level}`;
-  return (
-    <Tag className={`header h${props.level}`}>{props.children}</Tag>
-  )
+  const HeadTag = `h${props.level}`;
+  const el = <HeadTag />;
+  return cloneElement(el, { className: `header h${props.level}`, children: props.children });
 };
 
 export default Header;
