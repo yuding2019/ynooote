@@ -83,8 +83,13 @@ $n400: #303436;
 $n500: #02141b;
 $n600: #000;
 
+$bg: #fefefd;
+$bgLight: $n0;
+
+$fontFamily: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
 .shadow1 {
-  box-shadow: 0 0 4px 2px $b50;
+  box-shadow: 0 0 4px 2px $n50;
 }
 
 .flexCenter {

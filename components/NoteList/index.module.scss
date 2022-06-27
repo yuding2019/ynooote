@@ -7,11 +7,12 @@
 
 .item {
   @extend .br08;
-  border: 1px solid $b50;
+  border: 1px solid $b200;
   padding: 16px;
   margin-bottom: 16px;
   user-select: none;
   cursor: pointer;
+  background-color: $bgLight;
 
   &:last-child {
     margin-bottom: 0;
@@ -19,6 +20,7 @@
 
   &:hover {
     border-color: $b500;
+    box-shadow: inset 0 0 0 1px $b500;
   }
 }
 

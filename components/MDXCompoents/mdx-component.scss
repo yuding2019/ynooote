@@ -7,6 +7,7 @@
   overflow: hidden;
   position: relative;
   margin: 16px 0;
+  background-color: $bgLight;
 
   &::before {
     content: '';
@@ -32,16 +33,22 @@
 }
 
 .code {
-  @extend .br16;
-  margin: 2px;
+  @extend .br08;
+  margin: 0 4px;
   padding: 2px 8px;
-  background-color: $b300;
-  color: $n0;
-  font-family: 'JetBrains Mono', 'Microsoft YaHei', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 13px;
+  background-color: $b50;
+  border: 1px solid transparent;
+  color: $b600;
+  font-family: 'JetBrains Mono', $fontFamily;
+  font-size: 14px;
 
   &::selection {
     background-color: transparent;
+  }
+
+  &:hover {
+    cursor: default;
+    border-color: $b600;
   }
 }
 
@@ -50,9 +57,9 @@
   padding: 16px;
   border: 1px solid $n50;
   margin: 8px 0;
-  font-family: 'JetBrains Mono', 'Microsoft YaHei', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: 'JetBrains Mono', $fontFamily;
   font-size: 13px;
-  font-weight: 600;
+  background-color: $bgLight;
 
   &:hover {
     border-color: $n100;
