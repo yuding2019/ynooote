@@ -25,6 +25,23 @@
   font-weight: 300;
 }
 
+.cursor {
+  display: inline-block;
+  height: 2px;
+  width: 14px;
+  position: relative;
+  bottom: -2px;
+  margin-left: 2px;
+  background-color: currentColor;
+  animation: flashing 1.5s steps(1) infinite;
+}
+
+@keyframes flashing {
+  50% {
+    background-color: transparent;
+  }
+}
+
 .navItem {
   @extend .flexCenter;
   position: relative;

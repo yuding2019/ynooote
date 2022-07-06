@@ -12,7 +12,7 @@ const GlobalHeader = () => {
   return (
     <header className={styles.globalHeader}>
       <ul className={styles.navWrap}>
-        <span className={styles.title}>yuding 的笔记</span>
+        <span className={styles.title}>yuding 的笔记<span className={styles.cursor} /></span>
         {/* {globalHeaderNavList.map((item) => {
           return (
             <li
