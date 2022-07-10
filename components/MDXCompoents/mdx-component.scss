@@ -29,6 +29,10 @@
 
   .p {
     white-space: pre-line;
+
+    &:hover {
+      background-color: transparent;
+    }
   }
 }
 
@@ -67,7 +71,12 @@
 }
 
 .p {
-  line-height: 1.5;
+  line-height: 1.7;
+  padding: 4px 0;
+
+  &:hover {
+    background-color: $n50;
+  }
 }
 
 .header {
@@ -107,5 +116,24 @@
   &:hover {
     background-color: $b600;
     color: $n0;
+  }
+}
+
+.ul {
+  padding: 6px 0;
+  padding-left: 24px;
+
+  .li {
+    padding: 4px 0;
+    line-height: 1.7;
+    list-style: armenian;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &:hover {
+      background-color: $n50;
+    }
   }
 }

@@ -10,6 +10,7 @@ import Pre from "./Pre";
 import Link from './Link';
 
 import styles from './index.module.scss';
+import { Li, Ul } from './UnorderList';
 
 const MDX_COMPONENTS = {
   blockquote: Blockquote,
@@ -23,6 +24,8 @@ const MDX_COMPONENTS = {
   h5: (props) => <Header {...props} level={5} />,
   h6: (props) => <Header {...props} level={6} />,
   a: Link,
+  ul: Ul,
+  li: Li,
 };
 
 export interface MDXPageLayoutProps {

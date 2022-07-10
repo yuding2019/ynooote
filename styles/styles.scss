@@ -32,13 +32,15 @@ body ul, body li {
   @extend .br08;
   width: 8px;
   background-color: transparent;
-  transition: 0.2s ease-out;
+
+  &:hover {
+    background-color:$n200;
+  }
 }
 
 ::-webkit-scrollbar-track {
   width: 8px;
   background-color: transparent;
-  transition: 0.2s ease-out;
 
   &:hover {
     background-color: $n50;
@@ -47,10 +49,6 @@ body ul, body li {
 
 *:hover::-webkit-scrollbar-thumb {
   background: $n100;
-
-  &:hover {
-    background-color:$n200;
-  }
 }
 
 *:hover::-webkit-scrollbar-track {
@@ -60,5 +58,5 @@ body ul, body li {
 }
 
 *::selection {
-  background-color: $n50;
+  background-color: $b50;
 }
