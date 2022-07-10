@@ -14,7 +14,8 @@ const App = ({ Component, pageProps }) => {
   return (
     <section className={styles.wrap}>
       <Head>
-        <title>woooooh</title>
+        <title>yuding 的笔记</title>
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
       </Head>
 
       <GlobalHeader />
