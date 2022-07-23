@@ -26,6 +26,7 @@ const MDX_COMPONENTS = {
   a: Link,
   ul: Ul,
   li: Li,
+  ol: Ul,
 };
 
 export interface MDXPageLayoutProps {

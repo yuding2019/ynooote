@@ -73,8 +73,10 @@
 .p {
   line-height: 1.7;
   padding: 4px 0;
+  color: $n400;
 
   &:hover {
+    color: $n600;
     background-color: $n50;
   }
 }

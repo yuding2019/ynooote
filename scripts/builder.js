@@ -13,6 +13,7 @@ const PUBLIC_MANIFEST_PATH = `public/manifest.${CURRENT_YEAR}.json`;
  * @typedef ManifestItem
  * @property {string} title - 标题
  * @property {string} path - 路径
+ * @property {string} [img] - 路径
  * @property {string} [createTime] - 创建时间
  * @property {string} [updateTime] - 更新时间
  * @property {string[]} [tags] - md文件标签数组
@@ -65,9 +66,13 @@ const MATE_RULES = [
       }
       return JSON.parse(value.replace(/\"/g, '\'').replace(/\'/g, '\"'));
     },
+  },
+  {
+    key: 'img',
+    match: /img.+\'(.+)\'\,/,
   }
 ];
-function getMate(meta = '') {
+function getMeta(meta = '') {
   const metaObj = {};
   MATE_RULES.forEach((rule) => {
     const matched = meta.match(rule.match);
@@ -89,11 +94,11 @@ function getMate(meta = '') {
  */
 function createManifestItem(filePath) {
   const mdxFile = Fs.readFileSync(resolvePath(filePath), { encoding: 'utf-8' }).toString();
-  const mateEndIndex = mdxFile.indexOf('}');
-  const mate = getMate(mdxFile.slice(0, mateEndIndex));
+  const metaEndIndex = mdxFile.indexOf('}');
+  const meta = getMeta(mdxFile.slice(0, metaEndIndex));
   
   return {
-    ...mate,
+    ...meta,
     path: filePath.replace(/pages|\.mdx/ig, ''),
     createTime: dayjs().format(DATE_FORMAT),
   }
@@ -105,6 +110,13 @@ function createManifestItem(filePath) {
  * @param {Git.FileChangeInfo} file
  */
 function updateManifestItem(item, file) {
+  const mdxFile = Fs.readFileSync(resolvePath(file.filePath), { encoding: 'utf-8' }).toString();
+  const metaEndIndex = mdxFile.indexOf('}');
+  const meta = getMeta(mdxFile.slice(0, metaEndIndex));
+
+  item.img = meta.img;
+  item.tags = meta.tags;
+  item.title = meta.title;
   item.path = file.filePath.replace(/pages|\.mdx/ig, '');
   item.updateTime = dayjs().format(DATE_FORMAT);
 }

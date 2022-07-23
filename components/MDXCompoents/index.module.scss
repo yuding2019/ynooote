@@ -1,14 +1,15 @@
 @import '../../styles/common.scss';
 
 .layout {
-
+  background-color: $bg;
 }
 
 .back {
-  width: 960px;
+  width: $mainWidth;
   margin: 0 auto;
   padding: 16px;
   padding-left: 24px;
+  padding-top: 18px;
   position: sticky;
   top: 0;
   background-color: $bg;

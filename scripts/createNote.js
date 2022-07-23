@@ -15,6 +15,8 @@ const initMdxContent = [
   "",
   "export const meta = {",
   "  title: ''",
+  "  tags: []",
+  "  img: ''",
   "};",
   "",
   "",
