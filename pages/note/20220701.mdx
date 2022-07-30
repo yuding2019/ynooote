@@ -8,9 +8,9 @@ export const meta = {
 
 # Prompt组件使用
 
-`message`允许传入字符串或者一个方法。
-1. 如果是字符串，拦截提示就是浏览器原生的`window.confirm(message)`
-2. 如果回调返回字符串就和传入`message`一样
+组件必填的prop`message`允许传入字符串或者一个方法：
+1. 如果是字符串，直接进行拦截，其提示就是浏览器原生的`window.confirm(message)`
+2. 如果回调返回字符串就和传入字符串的`message`一样
 3. 如果回调返回`true`表示允许跳转，返回`false`会拦截跳转但不**自动进行提示**
 ```ts
 <Prompt message="确认要离开吗" />
@@ -48,7 +48,7 @@ export const meta = {
 </>
 ```
 
-# history拦截路由
+# history拦截路由跳转
 `React Router`使用的是`history`库，将浏览器原生的`History API`和`Location API`进行封装，抹平了其中的差异，向外统一暴露常用易用的api
 
 `history`基本原理是将部分原生API进行二次拦截，比如`history.push()`就对应`window.history.pushState()`。
@@ -74,7 +74,7 @@ Array.prototype.push = function(item) {
 
 #### push/replace操作拦截
 
-和上述数组push拦截类似，在调用`history.push(url)`后，会执行类似的判断逻辑
+和上述数组push拦截类似，在调用`history.push(url)`后，会执行如下图的判断逻辑：
 
 ![](../images/2022070102.png)
 
@@ -84,9 +84,9 @@ Array.prototype.push = function(item) {
 
 在调用`history.goBack()`时，等于直接调用`window.history.go(-1)`。很遗憾，浏览器目前没有相关API能访问url历史记录，所以在使用这个方法的时候，库不知道`window.history.go(-1)`会往什么地方跳转，所以不能像`push()`那样直接进行拦截。
 
-`window.history.go()`调用后会触发一个`popstate`的事件，其中事件参数会携带激活url的相关信息。
+但是`window.history.go()`调用后会触发一个`popstate`的事件，其中事件参数会携带激活url的相关信息。
 
-利用这个事件可以实现`go(n)`的拦截，主要原理就是在跳转后依据`popstate`事件中相关数据计算出跳转的url，然后会经过和上面一样的判断过程。
+利用这个事件可以实现对`window.history.go(n)`的拦截，主要原理就是在跳转后依据`popstate`事件中相关数据计算出跳转的url，然后会经过和上面一样的判断过程。
 
 ![](../images/2022070103.png)
 
@@ -110,5 +110,20 @@ Array.prototype.push = function(item) {
 > 4. 再调用`window.history.go(1)`就将`window.history.location`重新指向了`url2`
 
 > 在回退的场景中，有个明显特征就是：此时`popstate`事件会被触发两次
+
+# 踩坑记录
+
+我司系统中在处理页面筛选条件时，为了保证页面刷新后也能保留筛选条件，会调用`syncParam`类似的方法将筛选条件同步到url上，此时一个坑悄无声息地出现了。
+
+```ts
+function syncParam(params) {
+  window.history.replaceState({}, '', url);
+}
+```
+
+该方法将当前url对应的`historyState`重置为空对象了，这时如果下一个路由页面中有使用`<Prompt />`且同时使用`history.goBack()`，就会发生意想不到的事情👽。
+
+> 上面没提到的点是`history`库会为所有通过其api跳转的url生成一个唯一的`key`，就保存在`historyState`上。在回退计算中，就是利用`historyState`中的`key`来计算的。此时被`syncParam`重置了，导致计算不出正确的`delta`，就不能正确回退了。
+> ![](../images/can-use.jpeg)
 
 export default ({ children }) => <MDXPageLayout>{children}</MDXPageLayout>;
