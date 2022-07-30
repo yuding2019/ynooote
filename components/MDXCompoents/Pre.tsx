@@ -43,7 +43,7 @@ const Pre: FC<MDXComponentProps> = (props) => {
                       const toeknProps = getTokenProps({ token, key });
 
                       return (
-                        <span key={key} {...toeknProps} style={{ ...toeknProps.style, fontStyle: '' }} />
+                        <span key={key} {...toeknProps} style={{ ...toeknProps.style, fontStyle: 'none' }} />
                       );
                     })}
                   </div>

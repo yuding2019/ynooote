@@ -64,6 +64,7 @@
   font-family: 'JetBrains Mono', $fontFamily;
   font-size: 13px;
   background-color: $bgLight;
+  overflow: auto;
 
   &:hover {
     border-color: $n100;

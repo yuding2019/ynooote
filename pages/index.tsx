@@ -7,7 +7,7 @@ import manifest from '../public/manifest.2022.json';
 import styles from './index.module.scss';
 
 const sortNoteByUpdateTime = manifest.sort((prev, next) => {
-  return dayjs(prev.updateTime || prev.createTime).isAfter(next.updateTime || next.createTime) ? -1 : 1;
+  return dayjs(prev.createTime).isAfter(next.createTime) ? -1 : 1;
 });
 
 const Home = () => {

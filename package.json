@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "new-note": "node ./scripts/createNote.js",
+    "note": "node ./scripts/createNote.js",
     "build:manifest": "node ./scripts/builder.js",
     "build": "next build && next export",
     "start": "next start",
