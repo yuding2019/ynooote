@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
 export interface MDXComponentProps {
-  className: string;
+  className?: string;
   children?: ReactNode;
 }

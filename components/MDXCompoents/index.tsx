@@ -11,8 +11,9 @@ import Link from './Link';
 
 import styles from './index.module.scss';
 import { Li, Ul } from './UnorderList';
+import Image from './Image';
 
-const MDX_COMPONENTS = {
+const MDX_COMPONENTS: import("mdx/types").MDXComponents = {
   blockquote: Blockquote,
   pre: Pre,
   code: Code,
@@ -27,6 +28,7 @@ const MDX_COMPONENTS = {
   ul: Ul,
   li: Li,
   ol: Ul,
+  img: Image,
 };
 
 export interface MDXPageLayoutProps {
