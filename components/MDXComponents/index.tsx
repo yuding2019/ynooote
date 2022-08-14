@@ -8,9 +8,10 @@ import Header from "./Header";
 import P from "./P";
 import Pre from "./Pre";
 import Link from "./Link";
+import { Li, Ul } from "./UnorderList";
+import Image from "./Image";
 
 import styles from "./index.module.scss";
-import { Li, Ul } from "./UnorderList";
 
 const MDX_COMPONENTS = {
   blockquote: Blockquote,
@@ -27,6 +28,7 @@ const MDX_COMPONENTS = {
   ul: Ul,
   li: Li,
   ol: Ul,
+  img: Image
 };
 
 export interface MDXPageLayoutProps {
