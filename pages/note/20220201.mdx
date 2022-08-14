@@ -1,4 +1,4 @@
-import MDXPageLayout from '../../components/MDXCompoents';
+import MDXPageLayout from '../../components/MDXComponents';
 
 export const meta = {
   title: '【TypeChallenge】中等难度个人题解（持续更新）',
@@ -326,4 +326,4 @@ T extends T ? [T] : never; // [A] | [B] | [C]
 > 特别的，在数组中对一个联合数组类型进行解构，可以将视为对联合类型中每一个数组进行解构，然后再联合起来。
 > 就像这样：`[1, ...([2] | [3])] === [1, 2] | [1, 3]`
 
-export default ({ children }) => <MDXPageLayout>{children}</MDXPageLayout>
+export default ({ children }) => <MDXPageLayout meta={meta}>{children}</MDXPageLayout>

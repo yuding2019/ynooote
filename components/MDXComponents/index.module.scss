@@ -8,9 +8,9 @@
 .back {
   width: $mainWidth;
   margin: 0 auto;
-  padding: 16px;
   padding-left: 24px;
   padding-top: 18px;
+  padding-bottom: 4px;
   position: sticky;
   top: 0;
   background-color: $bg;
@@ -35,9 +35,9 @@
   &::before {
     width: 10px;
     height: 10px;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%) rotate(-45deg);
+    top: 24px;
+    left: 1px;
+    transform: rotate(-45deg);
     border-top: 1px solid currentColor;
     border-left: 1px solid currentColor;
   }
@@ -46,8 +46,40 @@
     width: 16px;
     height: 1px;
     background-color: currentColor;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
+    top: 29px;
+    left: -1px;
+  }
+}
+
+.titleWrap {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 8px 0;
+
+  .title {
+    font-size: 32px;
+    font-weight: 200;
+    width: 100%;
+    text-align: center;
+  }
+
+  .tagsWrap {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+
+    .tag {
+      @extend .br16;
+      background-color: $b500;
+      display: inline-block;
+      padding: 4px 6px;
+      color: $n0;
+      font-size: 12px;
+      
+      &::selection {
+        background-color: transparent;
+      }
+    }
   }
 }

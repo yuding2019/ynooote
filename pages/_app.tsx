@@ -6,7 +6,7 @@ import GlobalHeader from '../components/GlobalHeader';
 
 import styles from './_app.module.scss';
 import '../styles/styles.scss';
-import '../components/MDXCompoents/mdx-component.scss';
+import '../components/MDXComponents/mdx-component.scss';
 
 dayjs.locale(zhCN);
 

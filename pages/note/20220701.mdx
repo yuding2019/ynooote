@@ -1,4 +1,4 @@
-import MDXPageLayout from '../../components/MDXCompoents';
+import MDXPageLayout from '../../components/MDXComponents';
 
 export const meta = {
   title: 'React Router中Prompt组件实现原理',
@@ -128,4 +128,4 @@ function syncParam(params) {
 > 上面没提到的点是`history`库会为所有通过其api跳转的url生成一个唯一的`key`，就保存在`historyState`上。在回退计算中，就是利用`historyState`中的`key`来计算的。此时被`syncParam`重置了，导致计算不出正确的`delta`，就不能正确回退了。
 > ![](../images/can-use.jpeg)
 
-export default ({ children }) => <MDXPageLayout>{children}</MDXPageLayout>;
+export default ({ children }) => <MDXPageLayout meta={meta}>{children}</MDXPageLayout>;
