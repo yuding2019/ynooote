@@ -69,6 +69,23 @@
   &:hover {
     border-color: $n100;
   }
+
+  .code-line {
+    &:hover .code-line-order {
+      color: $n600;
+    }
+
+    .code-line-order {
+      display: inline-block;
+      width: 22px;
+      text-align: end;
+      margin-right: 6px;
+      padding-right: 6px;
+      user-select: none;
+      border-right: 1px solid $n50;
+      color: $n100;
+    }
+  }
 }
 
 .p {

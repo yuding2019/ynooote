@@ -35,10 +35,15 @@ const Pre: FC<MDXComponentProps> = (props) => {
           return (
             <pre className={classNames(className, "pre")}>
               {tokens.map((line, i) => {
+                if (i === tokens.length - 1) {
+                  return null;
+                }
+
                 const lineProps = getLineProps({ line, key: i });
     
                 return (
-                  <div key={i} {...lineProps}>
+                  <div key={i} {...lineProps} className={classNames(lineProps.className, 'code-line')}>
+                    <span className="code-line-order">{i + 1}</span>
                     {line.map((token, key) => {
                       const toeknProps = getTokenProps({ token, key });
 
