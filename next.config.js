@@ -12,6 +12,7 @@ const withMDX = require('@next/mdx')({
  */
 const nextConfig = {
   pageExtensions: ['tsx', 'mdx'],
+  basePath: '/ynooote'
 };
 
 module.exports = withMDX(nextConfig);
