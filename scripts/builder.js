@@ -9,6 +9,8 @@ const DATE_FORMAT = "YYYY-MM-DD HH:mm";
 const CURRENT_YEAR = dayjs().year();
 const PUBLIC_MANIFEST_PATH = `public/manifest.${CURRENT_YEAR}.json`;
 
+const nextConfig = require('../next.config');
+
 /**
  * @typedef ManifestItem
  * @property {string} title - 标题
@@ -70,6 +72,12 @@ const MATE_RULES = [
   {
     key: 'img',
     match: /img.+\'(.+)\'\,/,
+    process: (value) => {
+      if (value.startsWith('/')) {
+        return `${nextConfig.basePath}${value}`;
+      }
+      return value;
+    },
   }
 ];
 function getMeta(meta = '') {
