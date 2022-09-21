@@ -72,12 +72,6 @@ const MATE_RULES = [
   {
     key: 'img',
     match: /img.+\'(.+)\'\,/,
-    process: (value) => {
-      if (value.startsWith('/')) {
-        return `${nextConfig.basePath}${value}`;
-      }
-      return value;
-    },
   }
 ];
 function getMeta(meta = '') {

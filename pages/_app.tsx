@@ -15,8 +15,7 @@ const App = ({ Component, pageProps }) => {
     <section className={styles.wrap}>
       <Head>
         <title>yuding 的笔记</title>
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="/ynooote/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href={`${process.env.BASE_PATH || ''}/favicon.ico`} type="image/x-icon" />
       </Head>
 
       <GlobalHeader />

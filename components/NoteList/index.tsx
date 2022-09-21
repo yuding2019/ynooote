@@ -25,6 +25,14 @@ function getDefaultImgByTag(tags: string[]) {
   return DEFAULT_IMG[(tag || '').toLowerCase()] || DEFAULT_IMG.default;
 }
 
+function getImgSrc(src: string) {
+  if (/^\.?\//.test(src)) {
+    const _src = src.startsWith('.') ? src.replace('.', '') : src;
+    return `${process.env.BASE_PATH || ''}${_src}`;
+  }
+  return src;
+}
+
 const NoteList: React.FC<NoteListProps> = (props) => {
   const { list, onClick } = props;
 
@@ -46,7 +54,7 @@ const NoteList: React.FC<NoteListProps> = (props) => {
           </div>
         </div>
         <div className={styles.img}>
-          <img src={item.img || getDefaultImgByTag(tags)} />
+          <img src={getImgSrc(item.img || getDefaultImgByTag(tags))} />
         </div>
       </li>
     )
