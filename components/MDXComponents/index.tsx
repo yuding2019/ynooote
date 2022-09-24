@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import { MDXProvider } from "@mdx-js/react";
 
@@ -12,6 +12,7 @@ import { Li, Ul } from "./UnorderList";
 import Image from "./Image";
 
 import styles from "./index.module.scss";
+import { APP_CONTENT_CLASS_NAME } from "../../common/constant";
 
 const MDX_COMPONENTS = {
   blockquote: Blockquote,
@@ -40,6 +41,26 @@ const MDXPageLayout: FC<MDXPageLayoutProps> = (props) => {
   const { meta, children } = props;
   const router = useRouter();
 
+  const backRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!backRef.current) {
+      return;
+    }
+    const appEl = document.querySelector(`.${APP_CONTENT_CLASS_NAME}`);
+    const totalHeight = appEl.children[0].clientHeight - appEl.clientHeight;
+
+    const handleContentScroll = (e: Event) => {
+      const scrollEl = e.target as HTMLDivElement;
+      const progress = ~~(scrollEl.scrollTop / totalHeight * 100);
+      backRef.current.style.background = `linear-gradient(to top, #f2fafe 0% ${progress}%, #fff ${progress}% 100%)`;
+    };
+
+    appEl.addEventListener('scroll', handleContentScroll);
+    return () => {
+      appEl.removeEventListener('scroll', handleContentScroll);
+    }
+  }, []);
+
   const handleBack = () => {
     router.replace("/");
   };
@@ -47,7 +68,7 @@ const MDXPageLayout: FC<MDXPageLayoutProps> = (props) => {
   return (
     <div className={styles.layout}>
       <div className={styles.toolbar}>
-        <div className={styles.tool} onClick={handleBack}>
+        <div className={styles.tool} ref={backRef} onClick={handleBack}>
           <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgY2xhc3M9ImZlYXRoZXIgZmVhdGhlci1jaGV2cm9uLWxlZnQiIGZpbGw9Im5vbmUiIGhlaWdodD0iMjQiIHN0cm9rZT0iY3VycmVudENvbG9yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMiIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBvbHlsaW5lIHBvaW50cz0iMTUgMTggOSAxMiAxNSA2Ii8+PC9zdmc+" alt="" />
         </div>
       </div>

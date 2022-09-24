@@ -1,8 +1,11 @@
 import Head from 'next/head';
 import dayjs from 'dayjs';
 import zhCN from 'dayjs/locale/zh-cn';
+import classNames from 'classnames';
 
 import GlobalHeader from '../components/GlobalHeader';
+
+import { APP_CONTENT_CLASS_NAME } from '../common/constant';
 
 import styles from './_app.module.scss';
 import '../styles/styles.scss';
@@ -19,7 +22,7 @@ const App = ({ Component, pageProps }) => {
       </Head>
 
       <GlobalHeader />
-      <div className={styles.contentWrap}>
+      <div className={classNames(styles.contentWrap, APP_CONTENT_CLASS_NAME)}>
         <div className={styles.content}>
           <Component {...pageProps} />
         </div>

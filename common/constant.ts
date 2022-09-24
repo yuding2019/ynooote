@@ -1,0 +1,1 @@
+export const APP_CONTENT_CLASS_NAME = 'APP_CONTENT';
