@@ -12,7 +12,8 @@ import { Li, Ul } from "./UnorderList";
 import Image from "./Image";
 
 import styles from "./index.module.scss";
-import { APP_CONTENT_CLASS_NAME } from "../../common/constant";
+import { useProgress } from "./hooks/useProgress";
+import Director from "../Director";
 
 const MDX_COMPONENTS = {
   blockquote: Blockquote,
@@ -37,36 +38,11 @@ export interface MDXPageLayoutProps {
   children: ReactNode;
 }
 
-const SCROLL_CALC_TIME = 16;
-
 const MDXPageLayout: FC<MDXPageLayoutProps> = (props) => {
   const { meta, children } = props;
   const router = useRouter();
 
-  const backRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!backRef.current) {
-      return;
-    }
-
-    let timestamp = 0;
-    const handleContentScroll = (e: Event) => {
-      if (e.timeStamp - timestamp < SCROLL_CALC_TIME) {
-        return;
-      }
-      timestamp = e.timeStamp;
-      const scrollEl = e.target as HTMLDivElement;
-      const totalHeight = scrollEl.children[0].clientHeight - scrollEl.clientHeight;
-      const progress = ~~(scrollEl.scrollTop / totalHeight * 100);
-      backRef.current.style.background = `linear-gradient(to top, #f2fafe 0% ${progress}%, #fff ${progress}% 100%)`;
-    };
-    
-    const appEl = document.querySelector(`.${APP_CONTENT_CLASS_NAME}`);
-    appEl.addEventListener('scroll', handleContentScroll);
-    return () => {
-      appEl.removeEventListener('scroll', handleContentScroll);
-    }
-  }, []);
+  const progress = useProgress();
 
   const handleBack = () => {
     router.replace("/");
@@ -75,17 +51,18 @@ const MDXPageLayout: FC<MDXPageLayoutProps> = (props) => {
   return (
     <div className={styles.layout}>
       <div className={styles.toolbar}>
-        <div className={styles.tool} ref={backRef} onClick={handleBack}>
+        <div className={styles.tool} ref={progress} onClick={handleBack}>
           <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgY2xhc3M9ImZlYXRoZXIgZmVhdGhlci1jaGV2cm9uLWxlZnQiIGZpbGw9Im5vbmUiIGhlaWdodD0iMjQiIHN0cm9rZT0iY3VycmVudENvbG9yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMiIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBvbHlsaW5lIHBvaW50cz0iMTUgMTggOSAxMiAxNSA2Ii8+PC9zdmc+" alt="" />
         </div>
       </div>
+      <Director />
       {meta.title && (
         <div className={styles.titleWrap}>
           <div className={styles.title}>{meta.title}</div>
           {meta.tags.length > 0 && (
             <div className={styles.tagsWrap}>
               {meta.tags.map((tag) => {
-                return <span className={styles.tag}>{tag}</span>;
+                return <span key={tag} className={styles.tag}>{tag}</span>;
               })}
             </div>
           )}

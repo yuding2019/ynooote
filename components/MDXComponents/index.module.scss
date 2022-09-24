@@ -6,11 +6,11 @@
 }
 
 .toolbar {
-  position: sticky;
-  top: 24px;
-  transform: translateX(-70px);
+  position: fixed;
+  top: 84px;
+  transform: translateX(-64px);
   width: fit-content;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
 
   .tool {
