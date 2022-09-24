@@ -37,6 +37,8 @@ export interface MDXPageLayoutProps {
   children: ReactNode;
 }
 
+const SCROLL_CALC_TIME = 16;
+
 const MDXPageLayout: FC<MDXPageLayoutProps> = (props) => {
   const { meta, children } = props;
   const router = useRouter();
@@ -46,15 +48,20 @@ const MDXPageLayout: FC<MDXPageLayoutProps> = (props) => {
     if (!backRef.current) {
       return;
     }
-    const appEl = document.querySelector(`.${APP_CONTENT_CLASS_NAME}`);
-    const totalHeight = appEl.children[0].clientHeight - appEl.clientHeight;
 
+    let timestamp = 0;
     const handleContentScroll = (e: Event) => {
+      if (e.timeStamp - timestamp < SCROLL_CALC_TIME) {
+        return;
+      }
+      timestamp = e.timeStamp;
       const scrollEl = e.target as HTMLDivElement;
+      const totalHeight = scrollEl.children[0].clientHeight - scrollEl.clientHeight;
       const progress = ~~(scrollEl.scrollTop / totalHeight * 100);
       backRef.current.style.background = `linear-gradient(to top, #f2fafe 0% ${progress}%, #fff ${progress}% 100%)`;
     };
-
+    
+    const appEl = document.querySelector(`.${APP_CONTENT_CLASS_NAME}`);
     appEl.addEventListener('scroll', handleContentScroll);
     return () => {
       appEl.removeEventListener('scroll', handleContentScroll);
