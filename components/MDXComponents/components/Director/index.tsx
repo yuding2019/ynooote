@@ -79,7 +79,7 @@ const Director = () => {
   }, [headers]);
 
   if (!headers.length) {
-    return null;
+    return <div className={styles.empty} />;
   }
 
   const handleClick = (headerItem: HeaderItem) => {
