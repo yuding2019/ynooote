@@ -17,6 +17,13 @@
 }
 
 .content {
-  width: $mainWidth;
   margin: 0 auto;
+}
+
+.empty {
+  position: absolute;
+  top: -999px;
+  left: -999px;
+  user-select: none;
+  font-family: 'JetBrains Mono';
 }

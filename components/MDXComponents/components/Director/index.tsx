@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames";
 
-import { APP_CONTENT_CLASS_NAME } from "../../common/constant";
+import { APP_CONTENT_CLASS_NAME } from "../../../../common/constant";
 
 import styles from "./index.module.scss";
 
@@ -10,11 +10,12 @@ export interface HeaderItem {
   id: string;
   level: number;
   offsetTop: number;
+  offsetBottom: number;
 }
 
 const CLASS_NAME_CONNECTOR = "@";
-const SCROLL_DELAY_TIME = 100;
-const OFFSET_TOP_RANGE = 50;
+const SCROLL_DELAY_TIME = 16;
+const OFFSET_TOP_RANGE = 30;
 
 const Director = () => {
   const [headers, setHeaders] = useState<HeaderItem[]>([]);
@@ -35,6 +36,7 @@ const Director = () => {
           level,
           text,
           offsetTop: header.offsetTop,
+          offsetBottom: header.offsetTop + header.offsetHeight,
         };
       });
       setHeaders(_headers);
@@ -61,10 +63,10 @@ const Director = () => {
       }
       timestamp = e.timeStamp;
       const scrollTop = (e.target as HTMLElement).scrollTop;
-      const minTop = scrollTop - OFFSET_TOP_RANGE;
-      const maxTop = scrollTop + OFFSET_TOP_RANGE;
+      const top = scrollTop - OFFSET_TOP_RANGE;
+      const bottom = scrollTop + OFFSET_TOP_RANGE;
       const headerInRange = headers.find((item) => {
-        return item.offsetTop >= minTop && item.offsetTop <= maxTop;
+        return item.offsetTop >= top && item.offsetBottom <= bottom;
       });
       if (headerInRange) {
         setActiveId(headerInRange.id);

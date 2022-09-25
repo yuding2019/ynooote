@@ -1,28 +1,27 @@
-@import '../../styles/common.scss';
+@import '../../../../styles/common.scss';
 
 .wrapper {
-  max-width: 300px;
-  min-width: 200px;
-  position: fixed;
-  top: 84px;
-  transform: translateX(804px);
-  display: inline-flex;
-  background-color: $n0;
-  @extend .br16;
+  width: 294px;
+  position: sticky;
+  top: 16px;
   display: inline-flex;
   flex-direction: column;
+  @extend .br16;
+  overflow: hidden;
   border: 1px solid $n50;
 }
 
 .header {
   padding: 16px;
-  box-shadow: 0 1px 0 0 $n50;
+  background-color: $n0;
+  border-bottom: 1px solid $n50;
 }
 
 .content {
   padding: 16px 8px;
   max-height: 520px;
   overflow-y: auto;
+  background-color: $n0;
 }
 
 .item {

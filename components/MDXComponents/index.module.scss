@@ -1,39 +1,16 @@
 @import '../../styles/common.scss';
 
 .layout {
+  position: relative;
   background-color: $bg;
-  padding: 0 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
-.toolbar {
-  position: fixed;
-  top: 84px;
-  transform: translateX(-64px);
-  width: fit-content;
-  display: inline-flex;
-  flex-direction: column;
-
-  .tool {
-    @extend .br16;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: $n0;
-    border: 1px solid $b100;
-    cursor: pointer;
-
-    img {
-      width: 32px;
-      height: 32px;
-      color: $b300;
-    }
-
-    &:hover {
-      border-color: $b500;
-    }
-  }
+.content {
+  width: 820px;
+  margin: 0 16px;
 }
 
 .titleWrap {
