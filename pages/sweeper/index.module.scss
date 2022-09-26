@@ -30,6 +30,7 @@
   display: flex;
   flex-direction: column;
   padding-right: 16px;
+  font-size: 13px;
   border-right: 1px solid $n50;
 
   & > div {
@@ -77,6 +78,14 @@
     background-color: $b200;
     z-index: 10;
     transition: all 0.1s ease-in;
+
+    &.success {
+      background-color: $success;
+    }
+
+    &.fail {
+      background-color: $r500;
+    }
   }
 
   .text {
@@ -102,6 +111,18 @@
     border-color: $b500;
     background-color: $b50;
     color: $b600;
+  }
+
+  &.success {
+    border-color: $success;
+    color: $success;
+    background-color: $n0;
+  }
+
+  &.fail {
+    border-color: $r500;
+    color: $r500;
+    background-color: $n0;
   }
 }
 
@@ -157,7 +178,7 @@
 .back {
   width: 100%;
   @extend .br16;
-  padding: 8px 0;
+  padding: 16px 0;
   text-align: center;
   margin-top: 16px;
   background-color: $n0;

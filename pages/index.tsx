@@ -12,6 +12,7 @@ const gameList = [
     tags: ['扫雷', 'web game'],
     path: '/sweeper',
     createTime: '2022-09-26 13:58',
+    updateTime: '2022-09-26 16:31',
     img: '/images/mine-sweeper.png',
   }
 ]

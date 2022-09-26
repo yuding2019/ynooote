@@ -92,11 +92,16 @@ export class SweeperCell {
   /**
    * 右键点击标记未不是雷，如果点错，直接结束游戏
    */
-  flagNotMine() {
+  flagNotMine(internalFlagging = false) {
+    if (this.flag === SWEEPER_FLAG_STATUS.NOT_MINE) {
+      return this.flagByCount();
+    }
+
     if (
       [SWEEPER_FLAG_STATUS.MINE, SWEEPER_FLAG_STATUS.QUESTION].includes(
         this.flag
-      )
+      ) &&
+      !internalFlagging
     ) {
       this.flag = SWEEPER_FLAG_STATUS.NONE;
       return;
@@ -108,6 +113,31 @@ export class SweeperCell {
     if (this.neighborMineCount === 0) {
       flagNeighborNotMine(this);
     }
+  }
+
+  private flagByCount() {
+    const cells = this.neighborIndexes.map((index) => this.parent.cells[index]);
+
+    const notMineCells = cells.filter((cell) => {
+      return cell.flag === SWEEPER_FLAG_STATUS.NOT_MINE;
+    });
+
+    const flagMineCells = cells.filter((cell) => {
+      return cell.flag === SWEEPER_FLAG_STATUS.MINE;
+    });
+
+    if (this.neighborMineCount && flagMineCells.length < this.neighborMineCount) {
+      return;
+    }
+
+    // 先判断是否标记正确，如果标记不正确，直接game over
+    const allRight = flagMineCells.every((cell) => cell.isMine);
+    if (!allRight) {
+      return true;
+    }
+
+    this.parent.visitedIndexes.push(...notMineCells.map((cell) => cell.index));
+    flagNeighborNotMine(this, false);
   }
 
   get showFlag() {
@@ -142,6 +172,7 @@ export class SweeperModel {
   isInitializedMine: boolean;
   visitedIndexes: number[];
   gameOver: boolean;
+  success: boolean;
 
   constructor(level: SweeperLevel) {
     this.size = SweeperSizeMap[level];
@@ -150,6 +181,7 @@ export class SweeperModel {
     this.isInitializedMine = false;
     this.visitedIndexes = [];
     this.gameOver = false;
+    this.success = false;
   }
 
   private initCells(xTotal: number, yTotal: number) {
@@ -193,6 +225,18 @@ export class SweeperModel {
 
   isGameOver(flagResult?: boolean) {
     this.gameOver = flagResult ?? false;
+    this.isSuccess();
+  }
+
+  private isSuccess() {
+    if (this.flagCount !== this.mineCount) {
+      return;
+    }
+
+    const allMineFlagged = this.cells
+      .filter((cell) => cell.isMine)
+      .every((cell) => cell.flag === SWEEPER_FLAG_STATUS.MINE);
+    this.success = allMineFlagged;
   }
 
   get flagCount() {

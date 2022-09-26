@@ -15,6 +15,7 @@ import {
   SweeperLevel,
   CONTROL_LEVEL_BUTTONS,
 } from "./constant";
+import { isNil } from "lodash";
 
 const CELL_WIDTH = 30;
 const LEFT_MOUSE_KEY = 0;
@@ -47,7 +48,16 @@ const Sweeper = () => {
         return;
       }
 
+      if (sweeperModelRef.current.success) {
+        cancelUpdateTimeRef.current();
+        return;
+      }
+
       const { x, y } = (e.target as HTMLDivElement).dataset;
+      if (isNil(x) || isNil(y)) {
+        return;
+      }
+
       const index = getIndex(+x, +y, sweeperModelRef.current.size);
       const cell = sweeperModelRef.current.cells[index];
       cell.flagCell();
@@ -63,16 +73,21 @@ const Sweeper = () => {
     if (e.button !== LEFT_MOUSE_KEY) {
       return;
     }
-    if (sweeperModelRef.current.gameOver) {
+
+    if (sweeperModelRef.current.gameOver || sweeperModelRef.current.success) {
       return;
     }
+
     if (!sweeperModelRef.current.isInitializedMine) {
       cancelUpdateTimeRef.current = updateTime();
       sweeperModelRef.current.initMines(cell.location);
     }
+
     sweeperModelRef.current.startFlagNotMine(cell);
     sweeperModelRef.current.isGameOver(cell.flagNotMine());
-    if (sweeperModelRef.current.gameOver) {
+
+    // 停止计时
+    if (sweeperModelRef.current.gameOver || sweeperModelRef.current.success) {
       cancelUpdateTimeRef.current();
     }
     update((prev) => ++prev);
@@ -86,6 +101,11 @@ const Sweeper = () => {
 
   const handleRestart = () => {
     cancelUpdateTimeRef.current();
+
+    if (!sweeperModelRef.current.isInitializedMine) {
+      return;
+    }
+
     sweeperModelRef.current = new SweeperModel(level);
     update((prev) => ++prev);
   };
@@ -96,6 +116,8 @@ const Sweeper = () => {
 
   const [xTotal, yTotal] = sweeperModelRef.current.size;
   const gameOver = sweeperModelRef.current.gameOver;
+  const gameSuccess = sweeperModelRef.current.success;
+
   return (
     <div className={styles.wrapper} ref={containerRef}>
       <div className={styles.board}>
@@ -125,7 +147,10 @@ const Sweeper = () => {
                 {sweeperModelRef.current.mineCount}
               </span>
               <span
-                className={styles.inProgress}
+                className={classNames(styles.inProgress, {
+                  [styles.success]: gameSuccess,
+                  [styles.fail]: gameOver,
+                })}
                 style={{
                   width: `${~~(
                     (sweeperModelRef.current.flagCount /
@@ -135,11 +160,15 @@ const Sweeper = () => {
                 }}
               />
             </div>
-            {gameOver && (
-              <div className={styles.restart} onClick={handleRestart}>
-                重新开始
-              </div>
-            )}
+            <div
+              className={classNames(styles.restart, {
+                [styles.success]: gameSuccess,
+                [styles.fail]: gameOver,
+              })}
+              onClick={handleRestart}
+            >
+              重新开始
+            </div>
           </div>
         </div>
         <div
@@ -182,7 +211,9 @@ const Sweeper = () => {
             );
           })}
         </div>
-        <div className={styles.back} onClick={handleBack}>返回列表</div>
+        <div className={styles.back} onClick={handleBack}>
+          返回列表
+        </div>
       </div>
     </div>
   );

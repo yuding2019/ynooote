@@ -37,7 +37,7 @@ export function printCells(cells: SweeperCell[], size: [number, number]) {
   console.log(strArray.join("\n"));
 }
 
-export function flagNeighborNotMine(cell: SweeperCell) {
+export function flagNeighborNotMine(cell: SweeperCell, skipMine = true) {
   if (
     difference(cell.neighborIndexes, cell.parent.visitedIndexes).length === 0
   ) {
@@ -50,31 +50,31 @@ export function flagNeighborNotMine(cell: SweeperCell) {
       return;
     }
     cell.parent.visitedIndexes.push(index);
-    if (current.isMine) {
+    if (current.isMine && skipMine) {
       return;
     }
-    current.flagNotMine();
+    current.flagNotMine(true);
   });
 }
 
 export function updateTime() {
   let timer: number | null = null;
-  let dom: HTMLElement = document.querySelector('#sweeper-time');
+  let dom: HTMLElement = document.querySelector("#sweeper-time");
 
   const startTime = dayjs().valueOf();
 
   const update = () => {
     const current = dayjs().valueOf();
-    dom.innerText = dayjs(current - startTime).format('mm:ss:SSS');
+    dom.innerText = dayjs(current - startTime).format("mm:ss:SSS");
     if (timer) {
       window.cancelAnimationFrame(timer);
     }
     timer = window.requestAnimationFrame(update);
   };
   update();
-  
+
   return () => {
     dom = null;
     window.cancelAnimationFrame(timer);
-  }
+  };
 }
