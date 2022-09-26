@@ -1,0 +1,172 @@
+@import '../../styles/common.scss';
+
+.wrapper {
+  width: 100%;
+  height: 100%;
+  padding-top: 60px;
+}
+
+.board {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.control {
+  width: 100%;
+  @extend .br16;
+  background-color: $n0;
+  margin-bottom: 16px;
+  display: flex;
+  border: 1px solid $n50;
+  padding: 16px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  padding-right: 16px;
+  border-right: 1px solid $n50;
+
+  & > div {
+    padding: 4px 16px;
+    @extend .br08;
+    cursor: pointer;
+    margin: 4px 0;
+
+    &:hover {
+      background-color: $n50;
+    }
+
+    &.active {
+      background-color: $b50;
+      color: $b500;
+    }
+  }
+}
+
+.info {
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  font-size: 12px;
+  @extend .br16;
+}
+
+.progress {
+  width: 100%;
+  height: 18px;
+  border-radius: 40px;
+  background-color: $n50;
+  margin-top: 16px;
+  overflow: hidden;
+  position: relative;
+
+  .inProgress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    display: inline-block;
+    background-color: $b200;
+    z-index: 10;
+    transition: all 0.1s ease-in;
+  }
+
+  .text {
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99;
+  }
+}
+
+.restart {
+  width: 100%;
+  @extend .br08;
+  padding: 8px 0;
+  text-align: center;
+  margin-top: 16px;
+  border: 1px solid $n50;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $b500;
+    background-color: $b50;
+    color: $b600;
+  }
+}
+
+.cellWrap {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+  border: 10px solid rgba(207, 207, 207, 0.548);
+  box-shadow: 0 0 0px 1px gray;
+  @extend .br16;
+}
+
+.cell {
+  position: absolute;
+  background-color: rgba(207, 207, 207, 0.548);
+  border: 3px solid gray;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 80%;
+    height: 80%;
+    pointer-events: none;
+  }
+
+  &.flag {
+    border: none;
+    box-shadow: inset 0 0 1px 1px rgb(156, 156, 156);
+    font-weight: bold;
+  }
+
+  &.gameOver {
+    border: none;
+    background-color: $r300;
+    box-shadow: inset 0 0 1px 1px rgb(156, 156, 156);
+  }
+
+  &.errorFlag {
+    animation: flashing 1.5s steps(1) infinite;
+  }
+
+  @keyframes flashing {
+    50% {
+      opacity: 0.5;
+    }
+  }
+}
+
+.back {
+  width: 100%;
+  @extend .br16;
+  padding: 8px 0;
+  text-align: center;
+  margin-top: 16px;
+  background-color: $n0;
+  border: 1px solid $n50;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $b500;
+    background-color: $b50;
+    color: $b600;
+  }
+}
