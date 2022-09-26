@@ -2,7 +2,7 @@ import classNames from 'classnames';
 
 import { globalHeaderNavList } from './nav';
 
-import styles from './index.module.scss';
+import styles from './index.module.less';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 

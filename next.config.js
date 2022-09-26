@@ -1,3 +1,6 @@
+const withLess = require("next-with-less");
+const withPlugins = require("next-compose-plugins");
+
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
@@ -14,4 +17,14 @@ const nextConfig = {
   pageExtensions: ['tsx', 'mdx'],
 };
 
-module.exports = withMDX(nextConfig);
+const plugins = [
+  [
+    withLess,
+    {
+      lessLoaderOptions: {},
+    }
+  ],
+  [withMDX],
+]
+
+module.exports = withPlugins(plugins, nextConfig);

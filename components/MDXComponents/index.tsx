@@ -13,7 +13,7 @@ import Image from "./Image";
 import Director from "./components/Director";
 import Toolbar from "./components/Toolbar";
 
-import styles from "./index.module.scss";
+import styles from "./index.module.less";
 
 const MDX_COMPONENTS = {
   blockquote: Blockquote,

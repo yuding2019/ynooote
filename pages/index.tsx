@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import NoteList from '../components/NoteList';
 
 import manifest from '../public/manifest.2022.json';
-import styles from './index.module.scss';
+import styles from './index.module.less';
 
 const gameList = [
   {

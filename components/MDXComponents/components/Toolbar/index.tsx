@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 
 import { useProgress } from "../../hooks/useProgress";
 
-import styles from "./index.module.scss";
+import styles from "./index.module.less";
 
 const Toolbar = () => {
   const router = useRouter();

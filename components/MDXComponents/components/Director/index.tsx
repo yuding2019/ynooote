@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { APP_CONTENT_CLASS_NAME } from "../../../../common/constant";
 
-import styles from "./index.module.scss";
+import styles from "./index.module.less";
 
 export interface HeaderItem {
   text: string;

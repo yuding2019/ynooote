@@ -1,4 +1,4 @@
-@import '../../styles/common.scss';
+@import '../../styles/common.less';
 
 .globalHeader {
   @extend .shadow1;
@@ -7,13 +7,13 @@
   position: sticky;
   top: 0;
   z-index: 99;
-  background-color: $bgLight;
+  background-color: @n0;
 }
 
 .navWrap {
   display: flex;
   align-items: center;
-  width: $mainWidth;
+  width: @mainWidth;
   height: 68px;
   margin: 0 auto;
   font-size: 22px;
@@ -49,16 +49,16 @@
   cursor: pointer;
 
   &:hover {
-    background-color: $b50;
+    background-color: @b50;
   }
 }
 
 .active {
-  color: $n0;
-  background-color: $b600;
+  color: @n0;
+  background-color: @b600;
 
   &:hover {
-    background-color: $b500;
+    background-color: @b500;
   }
 }
 

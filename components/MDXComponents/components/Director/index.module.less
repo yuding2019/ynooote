@@ -1,4 +1,4 @@
-@import '../../../../styles/common.scss';
+@import '../../../../styles/common.less';
 
 .empty {
   width: 294px;
@@ -12,20 +12,20 @@
   flex-direction: column;
   @extend .br16;
   overflow: hidden;
-  border: 1px solid $n50;
+  border: 1px solid @n50;
 }
 
 .header {
   padding: 16px;
-  background-color: $n0;
-  border-bottom: 1px solid $n50;
+  background-color: @n0;
+  border-bottom: 1px solid @n50;
 }
 
 .content {
   padding: 16px 8px;
   max-height: 520px;
   overflow-y: auto;
-  background-color: $n0;
+  background-color: @n0;
 }
 
 .item {
@@ -35,11 +35,11 @@
   cursor: pointer;
 
   &:hover {
-    background-color: $n50;
+    background-color: @n50;
   }
 
   &.active {
-    background-color: $b50;
-    color: $b600;
+    background-color: @b50;
+    color: @b600;
   }
 }

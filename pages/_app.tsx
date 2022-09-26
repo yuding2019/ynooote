@@ -7,9 +7,9 @@ import GlobalHeader from "../components/GlobalHeader";
 
 import { APP_CONTENT_CLASS_NAME } from "../common/constant";
 
-import styles from "./_app.module.scss";
-import "../styles/styles.scss";
-import "../components/MDXComponents/mdx-component.scss";
+import styles from "./_app.module.less";
+import "../styles/styles.less";
+import "../components/MDXComponents/mdx-component.less";
 
 dayjs.locale(zhCN);
 

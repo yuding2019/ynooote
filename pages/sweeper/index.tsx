@@ -7,13 +7,14 @@ import mine from "./images/mine.png";
 import flag from "./images/flag.png";
 import question from "./images/question.png";
 
-import styles from "./index.module.scss";
+import styles from "./index.module.less";
 import { getIndex, updateTime } from "./util";
 import classNames from "classnames";
 import {
   SWEEPER_FLAG_STATUS,
   SweeperLevel,
   CONTROL_LEVEL_BUTTONS,
+  TIP_SVG_BASE_64,
 } from "./constant";
 import { isNil } from "lodash";
 
@@ -34,6 +35,7 @@ const Sweeper = () => {
   const cancelUpdateTimeRef = useRef(() => {});
 
   const [level, setLevel] = useState(SweeperLevel.EASY);
+  const [tipIndexes, setTipIndexes] = useState<number[]>([]);
   const sweeperModelRef = useRef(new SweeperModel(level));
 
   const router = useRouter();
@@ -60,7 +62,12 @@ const Sweeper = () => {
 
       const index = getIndex(+x, +y, sweeperModelRef.current.size);
       const cell = sweeperModelRef.current.cells[index];
-      cell.flagCell();
+      if (cell.flag === SWEEPER_FLAG_STATUS.NOT_MINE) {
+        sweeperModelRef.current.startFlagNotMine(cell);
+        sweeperModelRef.current.isGameOver(cell.flagNotMine());
+      } else {
+        cell.flagCell();
+      }
       update((prev) => ++prev);
     };
   }, []);
@@ -160,14 +167,19 @@ const Sweeper = () => {
                 }}
               />
             </div>
-            <div
-              className={classNames(styles.restart, {
-                [styles.success]: gameSuccess,
-                [styles.fail]: gameOver,
-              })}
-              onClick={handleRestart}
-            >
-              重新开始
+            <div>
+              <div
+                className={classNames(styles.singleButton, {
+                  [styles.success]: gameSuccess,
+                  [styles.fail]: gameOver,
+                })}
+                onClick={handleRestart}
+              >
+                重新开始
+              </div>
+              <div className={classNames(styles.singleButton)}>
+                <img src={TIP_SVG_BASE_64} />
+              </div>
             </div>
           </div>
         </div>

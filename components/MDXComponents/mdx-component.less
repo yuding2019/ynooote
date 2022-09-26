@@ -1,13 +1,13 @@
-@import '../../styles/common.scss';
+@import '../../styles/common.less';
 
 .blockquote {
   @extend .br08;
-  border: 1px solid $b100;
+  border: 1px solid @b100;
   padding: 16px;
   overflow: hidden;
   position: relative;
   margin: 16px 0;
-  background-color: $bgLight;
+  background-color: @n0;
 
   &::before {
     content: '';
@@ -16,15 +16,15 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background-color: $b100;
+    background-color: @b100;
   }
 
   &:hover {
-    border-color: $b300;
+    border-color: @b300;
   }
 
   &:hover::before {
-    background-color: $b300;
+    background-color: @b300;
   }
 
   .p {
@@ -40,10 +40,10 @@
   @extend .br08;
   margin: 0 4px;
   padding: 2px 8px;
-  background-color: $b50;
+  background-color: @b50;
   border: 1px solid transparent;
-  color: $b600;
-  font-family: 'JetBrains Mono', $fontFamily;
+  color: @b600;
+  font-family: 'JetBrains Mono', @fontFamily;
   font-size: 14px;
 
   &::selection {
@@ -52,27 +52,27 @@
 
   &:hover {
     cursor: default;
-    border-color: $b600;
+    border-color: @b600;
   }
 }
 
 .pre {
   @extend .br08;
   padding: 16px;
-  border: 1px solid $n50;
+  border: 1px solid @n50;
   margin: 8px 0;
-  font-family: 'JetBrains Mono', $fontFamily;
+  font-family: 'JetBrains Mono', @fontFamily;
   font-size: 13px;
-  background-color: $bgLight;
+  background-color: @n0;
   overflow: auto;
 
   &:hover {
-    border-color: $n100;
+    border-color: @n100;
   }
 
   .code-line {
     &:hover .code-line-order {
-      color: $n600;
+      color: @n600;
     }
 
     .code-line-order {
@@ -82,8 +82,8 @@
       margin-right: 6px;
       padding-right: 6px;
       user-select: none;
-      border-right: 1px solid $n50;
-      color: $n100;
+      border-right: 1px solid @n50;
+      color: @n100;
     }
   }
 }
@@ -91,11 +91,11 @@
 .p {
   line-height: 1.7;
   padding: 4px 0;
-  color: $n400;
+  color: @n400;
 
   &:hover {
-    color: $n600;
-    background-color: $n50;
+    color: @n600;
+    background-color: @n50;
   }
 }
 
@@ -129,13 +129,13 @@
 }
 
 .link {
-  color: $b600;
+  color: @b600;
   text-decoration: none;
   border-bottom: 1px solid currentColor;
 
   &:hover {
-    background-color: $b600;
-    color: $n0;
+    background-color: @b600;
+    color: @n0;
   }
 }
 
@@ -153,7 +153,7 @@
     }
 
     &:hover {
-      background-color: $n50;
+      background-color: @n50;
     }
   }
 }

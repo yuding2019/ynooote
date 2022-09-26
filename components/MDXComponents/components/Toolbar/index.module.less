@@ -1,4 +1,4 @@
-@import '../../../../styles/common.scss';
+@import '../../../../styles/common.less';
 
 .toolbar {
   position: sticky;
@@ -16,18 +16,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: $n0;
-    border: 1px solid $b100;
+    background-color: @n0;
+    border: 1px solid @b100;
     cursor: pointer;
 
     img {
       width: 32px;
       height: 32px;
-      color: $b300;
+      color: @b300;
     }
 
     &:hover {
-      border-color: $b500;
+      border-color: @b500;
     }
   }
 }

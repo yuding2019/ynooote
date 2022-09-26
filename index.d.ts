@@ -1,4 +1,4 @@
-declare module '*.module.scss' {
+declare module '*.module.less' {
   const styles: {
     readonly [key: string]: string;
   }

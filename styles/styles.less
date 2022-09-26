@@ -1,4 +1,4 @@
-@import './common.scss';
+@import './common.less';
 
 @font-face {
   font-family: 'JetBrains Mono';
@@ -10,8 +10,8 @@ html, body {
   height: 100vh;
   margin: 0;
   padding: 0;
-  font-family: $fontFamily;
-  background-color: $bg;
+  font-family: @fontFamily;
+  background-color: @n50;
 }
 
 body * {
@@ -25,39 +25,39 @@ body ul, body li {
 }
 
 *::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: @size;
+  height: @size;
 }
 
 *::-webkit-scrollbar-thumb {
-  @extend .br08;
-  width: 8px;
+  .br8();
+  width: @size;
   background-color: transparent;
 
   &:hover {
-    background-color:$n200;
+    background-color: @n200;
   }
 }
 
 ::-webkit-scrollbar-track {
-  width: 8px;
+  width: @size;
   background-color: transparent;
 
   &:hover {
-    background-color: $n50;
+    background-color: @n50;
   }
 }
 
 *:hover::-webkit-scrollbar-thumb {
-  background: $n100;
+  background: @n100;
 }
 
 *:hover::-webkit-scrollbar-track {
   &:hover {
-    background-color: $n50;
+    background-color: @n50;
   }
 }
 
 *::selection {
-  background-color: $b100;
+  background-color: @b100;
 }

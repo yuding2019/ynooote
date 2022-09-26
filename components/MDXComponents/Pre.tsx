@@ -3,7 +3,7 @@ import Highlight, { defaultProps, Language } from 'prism-react-renderer';
 import Github from 'prism-react-renderer/themes/github';
 
 import { MDXComponentProps } from "./types";
-import styles from './index.module.scss';
+import styles from './index.module.less';
 import classNames from "classnames";
 
 const LANG_MAP: Record<string, Language> = {

@@ -1,4 +1,4 @@
-@import '../../styles/common.scss';
+@import '../../styles/common.less';
 
 .wrapper {
   width: 100%;
@@ -19,10 +19,10 @@
 .control {
   width: 100%;
   @extend .br16;
-  background-color: $n0;
+  background-color: @n0;
   margin-bottom: 16px;
   display: flex;
-  border: 1px solid $n50;
+  border: 1px solid @n50;
   padding: 16px;
 }
 
@@ -31,7 +31,7 @@
   flex-direction: column;
   padding-right: 16px;
   font-size: 13px;
-  border-right: 1px solid $n50;
+  border-right: 1px solid @n50;
 
   & > div {
     padding: 4px 16px;
@@ -40,12 +40,12 @@
     margin: 4px 0;
 
     &:hover {
-      background-color: $n50;
+      background-color: @n50;
     }
 
     &.active {
-      background-color: $b50;
-      color: $b500;
+      background-color: @b50;
+      color: @b500;
     }
   }
 }
@@ -64,7 +64,7 @@
   width: 100%;
   height: 18px;
   border-radius: 40px;
-  background-color: $n50;
+  background-color: @n50;
   margin-top: 16px;
   overflow: hidden;
   position: relative;
@@ -75,7 +75,7 @@
     left: 0;
     bottom: 0;
     display: inline-block;
-    background-color: $b200;
+    background-color: @b200;
     z-index: 10;
     transition: all 0.1s ease-in;
 
@@ -98,31 +98,37 @@
   }
 }
 
-.restart {
+.singleButton {
   width: 100%;
   @extend .br08;
   padding: 8px 0;
   text-align: center;
   margin-top: 16px;
-  border: 1px solid $n50;
+  border: 1px solid @n50;
   cursor: pointer;
 
   &:hover {
-    border-color: $b500;
-    background-color: $b50;
-    color: $b600;
+    border-color: @b500;
+    background-color: @b50;
+    color: @b600;
   }
 
   &.success {
     border-color: $success;
     color: $success;
-    background-color: $n0;
+    background-color: @n0;
   }
 
   &.fail {
     border-color: $r500;
     color: $r500;
-    background-color: $n0;
+    background-color: @n0;
+  }
+
+  &.small {
+    width: 48px;
+    height: 100%;
+    margin-left: 8px;
   }
 }
 
@@ -181,13 +187,13 @@
   padding: 16px 0;
   text-align: center;
   margin-top: 16px;
-  background-color: $n0;
-  border: 1px solid $n50;
+  background-color: @n0;
+  border: 1px solid @n50;
   cursor: pointer;
 
   &:hover {
-    border-color: $b500;
-    background-color: $b50;
-    color: $b600;
+    border-color: @b500;
+    background-color: @b50;
+    color: @b600;
   }
 }

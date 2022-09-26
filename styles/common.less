@@ -1,0 +1,153 @@
+@size-xsm: 4px;
+@size-sm: 6px;
+@size: 8px;
+@size-ml: 12px;
+@size-lg: 16px;
+
+@padding-sm: 8px;
+@padding: 16px;
+@padding-ml: 24px;
+@padding-lg: 32px;
+
+@margin-sm: 8px;
+@margin: 16px;
+@margin-ml: 24px;
+@margin-lg: 32px;
+
+.brTopLeft(@r: @size-xsm) {
+  border-top-left-radius: @r;
+}
+
+.brTopRight(@r: @size-xsm) {
+  border-top-right-radius: @r;
+}
+
+.brBottomLeft(@r: @size-xsm) {
+  border-bottom-left-radius: @r;
+}
+
+.brBottomRight(@r: @size-xsm) {
+  border-bottom-left-radius: @r;
+}
+
+.brTop(@r: @size-xsm) {
+  .brTopLeft(@r);
+  .brTopRight(@r);
+}
+
+.brBottom(@r: @size-xsm) {
+  .brBottomLeft(@r);
+  .brBottomRight(@r);
+}
+
+.br(@r: @size-xsm) {
+  .brTop(@r);
+  .brBottom(@r);
+}
+
+.br8 {
+  .br(@size);
+}
+
+.br12 {
+  .br(@size-ml);
+}
+
+.br16 {
+  .br(@size-lg);
+}
+
+@n0: #fff;
+@n50: #f9fafb;
+@n100: #f3f4f6;
+@n200: #e5e7eb;
+@n300: #d1d5db;
+@n400: #9ca3af;
+@n500: #6b7280;
+@n600: #4b5563;
+@n700: #374151;
+@n800: #1f2937;
+@n900: #111827;
+
+@r50: #fef2f2;
+@r100: #fee2e2;
+@r200: #fecaca;
+@r300: #fca5a5;
+@r400: #f87171;
+@r500: #ef4444;
+@r600: #dc2626;
+@r700: #b91c1c;
+@r800: #991b1b;
+@r900: #7f1d1d;
+
+@y50: #fffbeb;
+@y100: #fef3c7;
+@y200: #fde68a;
+@y300: #fcd34d;
+@y400: #fbbf24;
+@y500: #f59e0b;
+@y600: #d97706;
+@y700: #b45309;
+@y800: #92400e;
+@y900: #78350f;
+
+@g50: #ecfdf5;
+@g100: #d1fae5;
+@g200: #a7f3d0;
+@g300: #6ee7b7;
+@g400: #34d399;
+@g500: #10b981;
+@g600: #059669;
+@g700: #047857;
+@g800: #065f46;
+@g900: #064e3b;
+
+@b50: #eff6ff;
+@b100: #dbeafe;
+@b200: #bfdbfe;
+@b300: #93c5fd;
+@b400: #60a5fa;
+@b500: #3b82f6;
+@b600: #2563eb;
+@b700: #1d4ed8;
+@b800: #1e40af;
+@b900: #1e3a8a;
+
+@i50: #eef2ff;
+@i100: #e0e7ff;
+@i200: #c7d2fe;
+@i300: #a5b4fc;
+@i400: #818cf8;
+@i500: #6366f1;
+@i600: #4f46e5;
+@i700: #4338ca;
+@i800: #3730a3;
+@i900: #312e81;
+
+@pp50: #f5f3ff;
+@pp100: #ede9fe;
+@pp200: #ddd6fe;
+@pp300: #c4b5fd;
+@pp400: #a78bfa;
+@pp500: #8b5cf6;
+@pp600: #7c3aed;
+@pp700: #6d28d9;
+@pp800: #5b21b6;
+@pp900: #4c1d95;
+
+@pk50: #fdf2f8;
+@pk100: #fce7f3;
+@pk200: #fbcfe8;
+@pk300: #f9a8d4;
+@pk400: #f472b6;
+@pk500: #ec4899;
+@pk600: #db2777;
+@pk700: #be185d;
+@pk800: #9d174d;
+@pk900: #831843;
+
+@mainWidth: 820px;
+
+@fontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+  "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+  sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";

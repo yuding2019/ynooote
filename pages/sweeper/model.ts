@@ -141,7 +141,7 @@ export class SweeperCell {
   }
 
   get showFlag() {
-    return this.flag === SWEEPER_FLAG_STATUS.MINE;
+    return [SWEEPER_FLAG_STATUS.MINE, SWEEPER_FLAG_STATUS.QUESTION].includes(this.flag);
   }
 
   get showMine() {
@@ -243,5 +243,11 @@ export class SweeperModel {
     return this.cells.reduce((count, cell) => {
       return count + Number(cell.flag === SWEEPER_FLAG_STATUS.MINE);
     }, 0);
+  }
+
+  getTip() {
+    const notFoundMineIndexes = this.cells.filter(() => {
+      
+    });
   }
 }
