@@ -1,3 +1,4 @@
+import { shuffle } from "lodash";
 import {
   SWEEPER_FLAG_STATUS,
   SweeperLevel,
@@ -126,7 +127,10 @@ export class SweeperCell {
       return cell.flag === SWEEPER_FLAG_STATUS.MINE;
     });
 
-    if (this.neighborMineCount && flagMineCells.length < this.neighborMineCount) {
+    if (
+      this.neighborMineCount &&
+      flagMineCells.length < this.neighborMineCount
+    ) {
       return;
     }
 
@@ -141,7 +145,9 @@ export class SweeperCell {
   }
 
   get showFlag() {
-    return [SWEEPER_FLAG_STATUS.MINE, SWEEPER_FLAG_STATUS.QUESTION].includes(this.flag);
+    return [SWEEPER_FLAG_STATUS.MINE, SWEEPER_FLAG_STATUS.QUESTION].includes(
+      this.flag
+    );
   }
 
   get showMine() {
@@ -246,8 +252,13 @@ export class SweeperModel {
   }
 
   getTip() {
-    const notFoundMineIndexes = this.cells.filter(() => {
-      
-    });
+    const notFoundMineIndexes = this.cells
+      .filter((cell) => {
+        return cell.isMine && cell.flag === SWEEPER_FLAG_STATUS.NONE;
+      })
+      .map((cell) => cell.index);
+
+    const shuffled = shuffle(notFoundMineIndexes);
+    return shuffled.slice(0, 3);
   }
 }

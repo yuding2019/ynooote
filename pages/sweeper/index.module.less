@@ -1,4 +1,4 @@
-@import '../../styles/common.less';
+@import "../../styles/common.less";
 
 .wrapper {
   width: 100%;
@@ -18,11 +18,11 @@
 
 .control {
   width: 100%;
-  @extend .br16;
+  .br16();
   background-color: @n0;
   margin-bottom: 16px;
   display: flex;
-  border: 1px solid @n50;
+  border: 1px solid @n200;
   padding: 16px;
 }
 
@@ -35,7 +35,7 @@
 
   & > div {
     padding: 4px 16px;
-    @extend .br08;
+    .br8();
     cursor: pointer;
     margin: 4px 0;
 
@@ -57,14 +57,14 @@
   justify-content: center;
   flex: 1;
   font-size: 12px;
-  @extend .br16;
+  .br16();
 }
 
 .progress {
   width: 100%;
   height: 18px;
   border-radius: 40px;
-  background-color: @n50;
+  background-color: @n100;
   margin-top: 16px;
   overflow: hidden;
   position: relative;
@@ -80,11 +80,11 @@
     transition: all 0.1s ease-in;
 
     &.success {
-      background-color: $success;
+      background-color: @g500;
     }
 
     &.fail {
-      background-color: $r500;
+      background-color: @r500;
     }
   }
 
@@ -98,13 +98,23 @@
   }
 }
 
-.singleButton {
-  width: 100%;
-  @extend .br08;
-  padding: 8px 0;
-  text-align: center;
+.btnWrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   margin-top: 16px;
-  border: 1px solid @n50;
+}
+
+.singleButton {
+  .br8();
+  width: 100%;
+  height: 32px;
+  flex: 1;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid @n200;
   cursor: pointer;
 
   &:hover {
@@ -114,21 +124,39 @@
   }
 
   &.success {
-    border-color: $success;
-    color: $success;
+    border-color: @g500;
+    color: @g500;
     background-color: @n0;
   }
 
   &.fail {
-    border-color: $r500;
-    color: $r500;
+    border-color: @r500;
+    color: @r500;
     background-color: @n0;
   }
+}
 
-  &.small {
-    width: 48px;
-    height: 100%;
-    margin-left: 8px;
+.tipBtn {
+  .br8();
+  flex-shrink: 0;
+  border: 1px solid @n200;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 80%;
+    height: 80%;
+  }
+
+  &:hover {
+    border-color: @b500;
   }
 }
 
@@ -138,7 +166,7 @@
   position: relative;
   border: 10px solid rgba(207, 207, 207, 0.548);
   box-shadow: 0 0 0px 1px gray;
-  @extend .br16;
+  .br16();
 }
 
 .cell {
@@ -166,11 +194,15 @@
 
   &.gameOver {
     border: none;
-    background-color: $r300;
+    background-color: @r300;
     box-shadow: inset 0 0 1px 1px rgb(156, 156, 156);
   }
 
   &.errorFlag {
+    animation: flashing 1.5s steps(1) infinite;
+  }
+
+  &.flash {
     animation: flashing 1.5s steps(1) infinite;
   }
 
@@ -183,12 +215,12 @@
 
 .back {
   width: 100%;
-  @extend .br16;
+  .br16();
   padding: 16px 0;
   text-align: center;
   margin-top: 16px;
   background-color: @n0;
-  border: 1px solid @n50;
+  border: 1px solid @n200;
   cursor: pointer;
 
   &:hover {

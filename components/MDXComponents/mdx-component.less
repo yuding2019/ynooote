@@ -1,7 +1,7 @@
-@import '../../styles/common.less';
+@import "../../styles/common.less";
 
 .blockquote {
-  @extend .br08;
+  .br8();
   border: 1px solid @b100;
   padding: 16px;
   overflow: hidden;
@@ -10,7 +10,7 @@
   background-color: @n0;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -37,13 +37,13 @@
 }
 
 .code {
-  @extend .br08;
+  .br8();
   margin: 0 4px;
   padding: 2px 8px;
   background-color: @b50;
   border: 1px solid transparent;
   color: @b600;
-  font-family: 'JetBrains Mono', @fontFamily;
+  font-family: "JetBrains Mono", @fontFamily;
   font-size: 14px;
 
   &::selection {
@@ -57,11 +57,11 @@
 }
 
 .pre {
-  @extend .br08;
+  .br8();
   padding: 16px;
-  border: 1px solid @n50;
+  border: 1px solid @n200;
   margin: 8px 0;
-  font-family: 'JetBrains Mono', @fontFamily;
+  font-family: "JetBrains Mono", @fontFamily;
   font-size: 13px;
   background-color: @n0;
   overflow: auto;
@@ -91,11 +91,11 @@
 .p {
   line-height: 1.7;
   padding: 4px 0;
-  color: @n400;
+  color: @n500;
 
   &:hover {
-    color: @n600;
-    background-color: @n50;
+    color: @n800;
+    background-color: @n100;
   }
 }
 
@@ -147,12 +147,14 @@
     padding: 4px 0;
     line-height: 1.7;
     list-style: armenian;
+    color: @n500;
 
     &:last-child {
       margin-bottom: 0;
     }
 
     &:hover {
+      color: @n800;
       background-color: @n50;
     }
   }

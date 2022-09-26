@@ -103,6 +103,7 @@ const Sweeper = () => {
   const handleLevelChange = (_level: SweeperLevel) => {
     sweeperModelRef.current = new SweeperModel(_level);
     cancelUpdateTimeRef.current();
+    setTipIndexes([]);
     setLevel(_level);
   };
 
@@ -114,11 +115,16 @@ const Sweeper = () => {
     }
 
     sweeperModelRef.current = new SweeperModel(level);
+    setTipIndexes([]);
     update((prev) => ++prev);
   };
 
   const handleBack = () => {
     router.replace("/");
+  };
+
+  const handleTip = () => {
+    setTipIndexes(sweeperModelRef.current.getTip());
   };
 
   const [xTotal, yTotal] = sweeperModelRef.current.size;
@@ -167,7 +173,7 @@ const Sweeper = () => {
                 }}
               />
             </div>
-            <div>
+            <div className={styles.btnWrap}>
               <div
                 className={classNames(styles.singleButton, {
                   [styles.success]: gameSuccess,
@@ -177,7 +183,7 @@ const Sweeper = () => {
               >
                 重新开始
               </div>
-              <div className={classNames(styles.singleButton)}>
+              <div className={styles.tipBtn} onClick={handleTip}>
                 <img src={TIP_SVG_BASE_64} />
               </div>
             </div>
@@ -203,6 +209,8 @@ const Sweeper = () => {
                       cell.flag !== SWEEPER_FLAG_STATUS.MINE &&
                       gameOver,
                     [styles.errorFlag]: cell.isError,
+                    [styles.flash]:
+                      !cell.flag && tipIndexes.includes(cell.index),
                   })}
                   style={{
                     width: CELL_WIDTH,
@@ -214,6 +222,9 @@ const Sweeper = () => {
                   data-y={location.y}
                   onClick={(e) => handleClick(e, cell)}
                 >
+                  {tipIndexes.includes(cell.index) && !cell.flag && (
+                    <img src={FLAG_SRC} />
+                  )}
                   {cell.showMine && <img src={MINE_SRC} />}
                   {cell.showFlag && <img src={STATUS_TO_SRC[cell.flag]} />}
                   {(cell.showCount && cell.neighborMineCount) || ""}
