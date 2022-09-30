@@ -1,23 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 
 import { APP_CONTENT_CLASS_NAME } from "../../../../common/constant";
 
 import styles from "./index.module.less";
+import { debounce } from "lodash";
 
 export interface HeaderItem {
   text: string;
+  classNames: string[];
   id: string;
   level: number;
   offsetTop: number;
   offsetBottom: number;
 }
 
-const CLASS_NAME_CONNECTOR = "@";
 const SCROLL_DELAY_TIME = 16;
 const OFFSET_TOP_RANGE = 30;
 
 const Director = () => {
+  const contentRef = useRef<HTMLDivElement>(null);
   const [headers, setHeaders] = useState<HeaderItem[]>([]);
   const [activeId, setActiveId] = useState("");
 
@@ -28,13 +30,11 @@ const Director = () => {
       ].map((header: HTMLElement, index) => {
         const level = Number(header.tagName.replace(/[a-z]+/gi, ""));
         const text = header.innerText;
-        const id = [...header.classList.values(), index].join(
-          CLASS_NAME_CONNECTOR
-        );
         return {
-          id,
-          level,
           text,
+          level,
+          id: `header_${index}`,
+          classNames: [...header.classList.values()],
           offsetTop: header.offsetTop,
           offsetBottom: header.offsetTop + header.offsetHeight,
         };
@@ -65,11 +65,20 @@ const Director = () => {
       const scrollTop = (e.target as HTMLElement).scrollTop;
       const top = scrollTop - OFFSET_TOP_RANGE;
       const bottom = scrollTop + OFFSET_TOP_RANGE;
-      const headerInRange = headers.find((item) => {
+      const headerInRangeIndex = headers.findIndex((item) => {
         return item.offsetTop >= top && item.offsetBottom <= bottom;
       });
+      const headerInRange = headers[headerInRangeIndex];
       if (headerInRange) {
         setActiveId(headerInRange.id);
+        if (headerInRangeIndex > 6) {
+          contentRef.current?.scrollTo({
+            top: (headerInRangeIndex - 5) * 37,
+            behavior: "smooth",
+          });
+        } else {
+          contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       }
     };
     scrollContainer.addEventListener("scroll", handleScroll);
@@ -83,8 +92,7 @@ const Director = () => {
   }
 
   const handleClick = (headerItem: HeaderItem) => {
-    const _classes = headerItem.id.split(CLASS_NAME_CONNECTOR).slice(0, -1);
-    const selector = _classes.reduce((_className, current) => {
+    const selector = headerItem.classNames.reduce((_className, current) => {
       if (_className) {
         return `${_className}.${current}`;
       }
@@ -96,16 +104,20 @@ const Director = () => {
       }
     );
     if (matchedHeader) {
-      matchedHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      matchedHeader.scrollIntoView({ behavior: "smooth", block: "start" });
     }
     setActiveId(headerItem.id);
   };
 
-  const minLevel = Math.min.apply(null, headers.map((i) => i.level))
+  const minLevel = Math.min.apply(
+    null,
+    headers.map((i) => i.level)
+  );
+
   return (
     <div className={styles.wrapper}>
       <header className={styles.header}>目录</header>
-      <div className={styles.content}>
+      <div className={styles.content} ref={contentRef}>
         {headers.map((item) => {
           const currentLevel = item.level - minLevel + 1;
           return (
@@ -113,6 +125,7 @@ const Director = () => {
               className={classNames(styles.item, {
                 [styles.active]: item.id === activeId,
               })}
+              id={item.id}
               key={item.id}
               style={{
                 paddingLeft: currentLevel * 8,
