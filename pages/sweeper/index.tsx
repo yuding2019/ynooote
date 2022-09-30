@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useReducer } from "react";
 import { useRouter } from "next/router";
 
 import { SweeperCell, SweeperModel } from "./model";
@@ -30,6 +30,10 @@ const STATUS_TO_SRC = {
   [SWEEPER_FLAG_STATUS.QUESTION]: QUESTION_SRC,
 };
 
+const forceUpdateReducer = (count: number = 0) => {
+  return ++count;
+}
+
 const Sweeper = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cancelUpdateTimeRef = useRef(() => {});
@@ -40,17 +44,13 @@ const Sweeper = () => {
 
   const router = useRouter();
 
-  const [_, update] = useState(0);
+  const [_, forceUpdate] = useReducer(forceUpdateReducer, 0);
 
   // 监听右键点击
   useEffect(() => {
     containerRef.current.oncontextmenu = function (e) {
       e.preventDefault();
-      if (sweeperModelRef.current.gameOver) {
-        return;
-      }
-
-      if (sweeperModelRef.current.success) {
+      if (sweeperModelRef.current.isGameEnd) {
         cancelUpdateTimeRef.current();
         return;
       }
@@ -64,11 +64,11 @@ const Sweeper = () => {
       const cell = sweeperModelRef.current.cells[index];
       if (cell.flag === SWEEPER_FLAG_STATUS.NOT_MINE) {
         sweeperModelRef.current.startFlagNotMine(cell);
-        sweeperModelRef.current.isGameOver(cell.flagNotMine());
       } else {
-        cell.flagCell();
+        cell.flagMine();
       }
-      update((prev) => ++prev);
+      sweeperModelRef.current.judgment();
+      forceUpdate();
     };
   }, []);
 
@@ -81,7 +81,8 @@ const Sweeper = () => {
       return;
     }
 
-    if (sweeperModelRef.current.gameOver || sweeperModelRef.current.success) {
+    if (sweeperModelRef.current.isGameEnd) {
+      cancelUpdateTimeRef.current();
       return;
     }
 
@@ -91,13 +92,14 @@ const Sweeper = () => {
     }
 
     sweeperModelRef.current.startFlagNotMine(cell);
-    sweeperModelRef.current.isGameOver(cell.flagNotMine());
+    cell.flagNotMine();
+    sweeperModelRef.current.judgment();
 
     // 停止计时
-    if (sweeperModelRef.current.gameOver || sweeperModelRef.current.success) {
+    if (sweeperModelRef.current.isGameEnd) {
       cancelUpdateTimeRef.current();
     }
-    update((prev) => ++prev);
+    forceUpdate();
   };
 
   const handleLevelChange = (_level: SweeperLevel) => {
@@ -116,7 +118,7 @@ const Sweeper = () => {
 
     sweeperModelRef.current = new SweeperModel(level);
     setTipIndexes([]);
-    update((prev) => ++prev);
+    forceUpdate();
   };
 
   const handleBack = () => {
@@ -124,15 +126,15 @@ const Sweeper = () => {
   };
 
   const handleTip = () => {
-    if (sweeperModelRef.current.gameOver || sweeperModelRef.current.success) {
+    if (sweeperModelRef.current.isGameEnd) {
       return;
     }
     setTipIndexes(sweeperModelRef.current.getTip());
   };
 
   const [xTotal, yTotal] = sweeperModelRef.current.size;
-  const gameOver = sweeperModelRef.current.gameOver;
-  const gameSuccess = sweeperModelRef.current.success;
+  const isGameOver = sweeperModelRef.current.isGameOver;
+  const isGameSuccess = sweeperModelRef.current.isGameSuccess;
 
   return (
     <div className={styles.wrapper} ref={containerRef}>
@@ -164,8 +166,8 @@ const Sweeper = () => {
               </span>
               <span
                 className={classNames(styles.inProgress, {
-                  [styles.success]: gameSuccess,
-                  [styles.fail]: gameOver,
+                  [styles.gameSuccess]: isGameSuccess,
+                  [styles.gameOver]: isGameOver,
                 })}
                 style={{
                   width: `${~~(
@@ -179,8 +181,8 @@ const Sweeper = () => {
             <div className={styles.btnWrap}>
               <div
                 className={classNames(styles.singleButton, {
-                  [styles.success]: gameSuccess,
-                  [styles.fail]: gameOver,
+                  [styles.gameSuccess]: isGameSuccess,
+                  [styles.gameOver]: isGameOver,
                 })}
                 onClick={handleRestart}
               >
@@ -206,14 +208,9 @@ const Sweeper = () => {
               <React.Fragment key={index}>
                 <div
                   className={classNames(styles.cell, {
-                    [styles.flag]: cell.flag === SWEEPER_FLAG_STATUS.NOT_MINE,
-                    [styles.gameOver]:
-                      cell.isMine &&
-                      cell.flag !== SWEEPER_FLAG_STATUS.MINE &&
-                      gameOver,
-                    [styles.errorFlag]: cell.isError,
-                    [styles.flash]:
-                      !cell.flag && tipIndexes.includes(cell.index),
+                    [styles.showCount]: cell.showCount,
+                    [styles.errorFlag]: cell.isFlagError,
+                    [styles.errorMine]: cell.showMine,
                   })}
                   style={{
                     width: CELL_WIDTH,
@@ -229,7 +226,7 @@ const Sweeper = () => {
                     <img src={FLAG_SRC} />
                   )}
                   {cell.showMine && <img src={MINE_SRC} />}
-                  {cell.showFlag && <img src={STATUS_TO_SRC[cell.flag]} />}
+                  {cell.showFlagIcon && <img src={STATUS_TO_SRC[cell.flag]} />}
                   {(cell.showCount && cell.neighborMineCount) || ""}
                 </div>
                 {isEnd && <br />}

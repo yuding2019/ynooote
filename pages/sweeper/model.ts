@@ -78,8 +78,8 @@ export class SweeperCell {
   /**
    * 左键点击进行标记雷
    */
-  flagCell() {
-    if (this.flag === SWEEPER_FLAG_STATUS.NOT_MINE) {
+  flagMine() {
+    if (this.flag === SWEEPER_FLAG_STATUS.NOT_MINE || this.parent.isGameEnd) {
       return;
     }
     const nextFlag = this.flag + 1;
@@ -91,11 +91,16 @@ export class SweeperCell {
   }
 
   /**
-   * 右键点击标记未不是雷，如果点错，直接结束游戏
+   * 右键点击标记未不是雷
    */
   flagNotMine(internalFlagging = false) {
+    if (this.parent.isGameEnd) {
+      return;
+    }
+
     if (this.flag === SWEEPER_FLAG_STATUS.NOT_MINE) {
-      return this.flagByCount();
+      this.flagByCount();
+      return;
     }
 
     if (
@@ -107,23 +112,23 @@ export class SweeperCell {
       this.flag = SWEEPER_FLAG_STATUS.NONE;
       return;
     }
-    if (this.isMine) {
-      return true;
-    }
+
     this.flag = SWEEPER_FLAG_STATUS.NOT_MINE;
-    if (this.neighborMineCount === 0) {
+    if (this.neighborMineCount === 0 && !this.isMine) {
       flagNeighborNotMine(this);
     }
   }
 
   private flagByCount() {
-    const cells = this.neighborIndexes.map((index) => this.parent.cells[index]);
+    const neighborCells = this.neighborIndexes.map(
+      (index) => this.parent.cells[index]
+    );
 
-    const notMineCells = cells.filter((cell) => {
+    const notMineCells = neighborCells.filter((cell) => {
       return cell.flag === SWEEPER_FLAG_STATUS.NOT_MINE;
     });
 
-    const flagMineCells = cells.filter((cell) => {
+    const flagMineCells = neighborCells.filter((cell) => {
       return cell.flag === SWEEPER_FLAG_STATUS.MINE;
     });
 
@@ -137,14 +142,15 @@ export class SweeperCell {
     // 先判断是否标记正确，如果标记不正确，直接game over
     const allRight = flagMineCells.every((cell) => cell.isMine);
     if (!allRight) {
-      return true;
+      this.parent.setGameOver();
+      return;
     }
 
     this.parent.visitedIndexes.push(...notMineCells.map((cell) => cell.index));
-    flagNeighborNotMine(this, false);
+    flagNeighborNotMine(this);
   }
 
-  get showFlag() {
+  get showFlagIcon() {
     return [SWEEPER_FLAG_STATUS.MINE, SWEEPER_FLAG_STATUS.QUESTION].includes(
       this.flag
     );
@@ -152,7 +158,7 @@ export class SweeperCell {
 
   get showMine() {
     return (
-      this.parent.gameOver &&
+      this.parent.isGameOver &&
       this.isMine &&
       this.flag !== SWEEPER_FLAG_STATUS.MINE
     );
@@ -162,9 +168,9 @@ export class SweeperCell {
     return this.flag === SWEEPER_FLAG_STATUS.NOT_MINE;
   }
 
-  get isError() {
+  get isFlagError() {
     return (
-      this.parent.gameOver &&
+      this.parent.isGameOver &&
       this.flag === SWEEPER_FLAG_STATUS.MINE &&
       !this.isMine
     );
@@ -177,8 +183,9 @@ export class SweeperModel {
   mineCount: number;
   isInitializedMine: boolean;
   visitedIndexes: number[];
-  gameOver: boolean;
-  success: boolean;
+  isGameOver: boolean;
+  isGameSuccess: boolean;
+  isGameEnd: boolean;
 
   constructor(level: SweeperLevel) {
     this.size = SweeperSizeMap[level];
@@ -186,8 +193,9 @@ export class SweeperModel {
     this.initCells(...this.size);
     this.isInitializedMine = false;
     this.visitedIndexes = [];
-    this.gameOver = false;
-    this.success = false;
+    this.isGameOver = false;
+    this.isGameSuccess = false;
+    this.isGameEnd = false;
   }
 
   private initCells(xTotal: number, yTotal: number) {
@@ -229,20 +237,44 @@ export class SweeperModel {
     this.visitedIndexes = [startCell.index];
   }
 
-  isGameOver(flagResult?: boolean) {
-    this.gameOver = flagResult ?? false;
-    this.isSuccess();
+  setGameOver() {
+    if (this.isGameEnd) {
+      return;
+    }
+    this.isGameOver = true;
+    this.isGameEnd = true;
   }
 
-  private isSuccess() {
-    if (this.flagCount !== this.mineCount) {
+  setGameSuccess() {
+    if (this.isGameEnd) {
+      return;
+    }
+    this.isGameSuccess = true;
+    this.isGameEnd = true;
+  }
+
+  judgment() {
+    // 判断是否标记错误
+    const isFlagFalsely = this.cells.some((cell) => {
+      return cell.isMine && cell.flag === SWEEPER_FLAG_STATUS.NOT_MINE;
+    });
+    if (isFlagFalsely) {
+      this.setGameOver();
       return;
     }
 
-    const allMineFlagged = this.cells
-      .filter((cell) => cell.isMine)
-      .every((cell) => cell.flag === SWEEPER_FLAG_STATUS.MINE);
-    this.success = allMineFlagged;
+    // 判断是否全部标记成功
+    const isAllMineFlagged = this.cells
+      .filter((cell) => {
+        return cell.isMine;
+      })
+      .every((cell) => {
+        return cell.flag === SWEEPER_FLAG_STATUS.MINE;
+      });
+    if (isAllMineFlagged) {
+      this.setGameSuccess();
+      return;
+    }
   }
 
   get flagCount() {

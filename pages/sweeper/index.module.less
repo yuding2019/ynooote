@@ -75,15 +75,15 @@
     left: 0;
     bottom: 0;
     display: inline-block;
-    background-color: @b200;
+    background-color: @b400;
     z-index: 10;
     transition: all 0.1s ease-in;
 
-    &.success {
+    &.gameSuccess {
       background-color: @g500;
     }
 
-    &.fail {
+    &.gameOver {
       background-color: @r500;
     }
   }
@@ -123,13 +123,13 @@
     color: @b600;
   }
 
-  &.success {
+  &.gameSuccess {
     border-color: @g500;
     color: @g500;
     background-color: @n0;
   }
 
-  &.fail {
+  &.gameOver {
     border-color: @r500;
     color: @r500;
     background-color: @n0;
@@ -186,13 +186,13 @@
     pointer-events: none;
   }
 
-  &.flag {
+  &.showCount {
     border: none;
     box-shadow: inset 0 0 1px 1px rgb(156, 156, 156);
     font-weight: bold;
   }
 
-  &.gameOver {
+  &.errorMine {
     border: none;
     background-color: @r300;
     box-shadow: inset 0 0 1px 1px rgb(156, 156, 156);

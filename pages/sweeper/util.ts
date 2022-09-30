@@ -37,7 +37,7 @@ export function printCells(cells: SweeperCell[], size: [number, number]) {
   console.log(strArray.join("\n"));
 }
 
-export function flagNeighborNotMine(cell: SweeperCell, skipMine = true) {
+export function flagNeighborNotMine(cell: SweeperCell) {
   if (
     difference(cell.neighborIndexes, cell.parent.visitedIndexes).length === 0
   ) {
@@ -50,7 +50,7 @@ export function flagNeighborNotMine(cell: SweeperCell, skipMine = true) {
       return;
     }
     cell.parent.visitedIndexes.push(index);
-    if (current.isMine && skipMine) {
+    if (current.isMine) {
       return;
     }
     current.flagNotMine(true);
