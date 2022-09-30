@@ -124,6 +124,9 @@ const Sweeper = () => {
   };
 
   const handleTip = () => {
+    if (sweeperModelRef.current.gameOver || sweeperModelRef.current.success) {
+      return;
+    }
     setTipIndexes(sweeperModelRef.current.getTip());
   };
 
