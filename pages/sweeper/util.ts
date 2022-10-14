@@ -21,6 +21,7 @@ export function getIndex(x: number, y: number, size: [number, number]) {
 export function printCells(cells: SweeperCell[], size: [number, number]) {
   const [xTotal, yTotal] = size;
   const strArray: string[] = [];
+  console.log('%c作弊！被我抓住了吧', "background-color: #ef4444; color: #fff; padding: 2px 6px;");
   for (let y = 0; y < yTotal; y++) {
     strArray.push("----".repeat(xTotal));
     let line = "|";
