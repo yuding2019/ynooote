@@ -29,10 +29,13 @@
 }
 
 .item {
+  .br8();
   padding: 8px;
-   .br8();
   position: relative;
   cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   &:hover {
     background-color: @n50;

@@ -39,8 +39,10 @@ const Director = () => {
           offsetBottom: header.offsetTop + header.offsetHeight,
         };
       });
-      setHeaders(_headers);
-      setActiveId(_headers[0].id);
+      if (_headers.length) {
+        setHeaders(_headers);
+        setActiveId(_headers[0].id);
+      }
     };
 
     setTimeout(() => {
@@ -132,6 +134,7 @@ const Director = () => {
                 fontWeight: 600 - item.level * 50,
               }}
               onClick={() => handleClick(item)}
+              title={item.text}
             >
               {item.text}
             </div>
