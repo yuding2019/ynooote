@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 
-import NoteList from '../components/NoteList';
+import NoteList, { BaseNoteInfo } from '../components/NoteList';
+import Emit from '../common/emit';
 
 import manifest from '../public/manifest.2022.json';
 import styles from './index.module.less';
+import { GLOBAL_EVENT_NAME } from '../common/constant';
 
 const gameList = [
   {
@@ -24,9 +26,14 @@ const sortNoteByUpdateTime = [...gameList, ...manifest].sort((prev, next) => {
 const Home = () => {
   const router = useRouter();
 
+  const handleClick = (item: BaseNoteInfo) => {
+    router.push(item.path);
+    Emit.emit(GLOBAL_EVENT_NAME.ROUTER_CHANGE, true);
+  }
+
   return (
     <div className={styles.wrapper}>
-      <NoteList list={sortNoteByUpdateTime} onClick={(item) => router.push(item.path)} />
+      <NoteList list={sortNoteByUpdateTime} onClick={handleClick} />
     </div>
   )
 }

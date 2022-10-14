@@ -8,6 +8,7 @@
   z-index: 99;
   background-color: @n0;
   box-shadow: 0 1px 4px 2px @n200;
+  position: relative;
 }
 
 .navWrap {
@@ -39,5 +40,40 @@
 @keyframes flashing {
   50% {
     background-color: transparent;
+  }
+}
+
+.progress {
+  .br8();
+  position: absolute;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: @b500;
+  overflow: hidden;
+  transition: width 3s;
+
+  &::after {
+    .br8();
+    content: '';
+    width: 24px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(to right, transparent, @b50);
+    animation: progress 5s ease-in infinite;
+  }
+}
+
+@keyframes progress {
+  0% {
+    left: -24px;
+  }
+  90% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
   }
 }
