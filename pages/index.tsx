@@ -1,21 +1,23 @@
-import dayjs from 'dayjs';
-import { useRouter } from 'next/router';
+import dayjs from "dayjs";
+import { useRouter } from "next/router";
+import { GLOBAL_EVENT_NAME } from "../common/constant";
+import Emit from "../common/emit";
 
-import NoteList from '../components/NoteList';
+import NoteList, { BaseNoteInfo } from "../components/NoteList";
 
-import manifest from '../public/manifest.2022.json';
-import styles from './index.module.less';
+import manifest from "../public/manifest.2022.json";
+import styles from "./index.module.less";
 
 const gameList = [
   {
-    title: '扫雷',
-    tags: ['扫雷', 'web game'],
-    path: '/sweeper',
-    createTime: '2022-09-26 13:58',
-    updateTime: '2022-09-26 16:31',
-    img: '/images/mine-sweeper.png',
-  }
-]
+    title: "扫雷",
+    tags: ["扫雷", "web game"],
+    path: "/sweeper",
+    createTime: "2022-09-26 13:58",
+    updateTime: "2022-09-26 16:31",
+    img: "/images/mine-sweeper.png",
+  },
+];
 
 const sortNoteByUpdateTime = [...gameList, ...manifest].sort((prev, next) => {
   return dayjs(prev.createTime).isAfter(next.createTime) ? -1 : 1;
@@ -24,11 +26,19 @@ const sortNoteByUpdateTime = [...gameList, ...manifest].sort((prev, next) => {
 const Home = () => {
   const router = useRouter();
 
+  const handleClick = (item: BaseNoteInfo) => {
+    router.push(item.path);
+    Emit.emit(GLOBAL_EVENT_NAME.ROUTING_START);
+  };
+
   return (
     <div className={styles.wrapper}>
-      <NoteList list={sortNoteByUpdateTime} onClick={(item) => router.push(item.path)} />
+      <NoteList
+        list={sortNoteByUpdateTime}
+        onClick={handleClick}
+      />
     </div>
-  )
-}
+  );
+};
 
 export default Home;
