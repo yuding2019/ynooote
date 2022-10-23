@@ -11,10 +11,17 @@ import styles from "./index.module.less";
 const gameList = [
   {
     title: "扫雷",
-    tags: ["扫雷", "web game"],
+    tags: ["web game"],
     path: "/sweeper",
     createTime: "2022-09-26 13:58",
     updateTime: "2022-09-26 16:31",
+    img: "/images/mine-sweeper.png",
+  },
+  {
+    title: "2048",
+    tags: ["web game"],
+    path: "/2048",
+    createTime: "2022-10-22 16:01",
     img: "/images/mine-sweeper.png",
   },
 ];

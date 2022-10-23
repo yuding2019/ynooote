@@ -1,16 +1,25 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import classNames from "classnames";
 
 import { GAME_BOARD_ID, GAME_SIZE } from "./constant";
 
 import styles from "./index.module.less";
-import { GameSize } from "./model";
+import { GameSize, GameModel } from "./model";
 
 const Game2048 = () => {
   const router = useRouter();
 
   const [size, setSize] = useState<GameSize>(GAME_SIZE.FOUR);
+  const gameRef = useRef<GameModel>(new GameModel());
+
+  useEffect(() => {
+    gameRef.current.init(size);
+
+    return () => {
+      gameRef.current.clear();
+    }
+  }, []);
 
   const handleSizeSelect = (_size: GameSize) => {
     setSize(_size);
@@ -48,6 +57,7 @@ const Game2048 = () => {
 
     return (
       <div className={styles.background}>
+        <div id={GAME_BOARD_ID} />
         {rows.map((row, rowIndex) => {
           return (
             <div className={styles.bgRow} key={rowIndex}>
@@ -57,7 +67,6 @@ const Game2048 = () => {
             </div>
           );
         })}
-        <div id={GAME_BOARD_ID} />
       </div>
     );
   };

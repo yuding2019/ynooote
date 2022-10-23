@@ -6,39 +6,47 @@ export class Cell {
 
   isMerge: boolean;
   isMoved: boolean;
+  isOverride: boolean;
 
   mergeFrom?: Cell;
-  moveFrom?: Cell;
+  moveTo?: Cell;
 
   constructor(location: MatrixLocation) {
     this.location = location;
     this.value = 0;
     this.isMerge = false;
     this.isMoved = false;
+    this.isOverride = false;
   }
 
   get canBeOverride() {
-    if (this.value === 0) {
-      return true;
-    }
-    return (this.isMerge && !this.mergeFrom) || this.isMoved;
+    return (
+      (this.isMerge && !this.mergeFrom) || this.isMoved || !this.isOverride
+    );
   }
 
   clearStatus() {
     this.isMerge = false;
     this.isMoved = false;
-    this.mergeFrom = void 0;
-    this.moveFrom = void 0;
+    this.isOverride = false;
+    this.mergeFrom = undefined;
+    this.moveTo = undefined;
   }
 
-  moveTo(to: Cell) {
+  recordMoveTo(to: Cell) {
     this.isMoved = true;
-    to.moveFrom = this;
+    this.moveTo = to;
+    to.isOverride = true;
   }
 
-  merge(from: Cell) {
-    from.isMerge = true;
-    this.isMerge = true;
-    this.mergeFrom = from;
+  move() {
+    const to = this.moveTo;
+    if (!to) {
+      return;
+    }
+    to.value = this.value;
+    this.value = 0;
   }
+
+  mergeTo(to: Cell) {}
 }

@@ -16,6 +16,7 @@ function numberEach(
     cb(current);
     current += increase;
   }
+  cb(current);
 }
 
 export interface MatrixLocation {
@@ -51,11 +52,11 @@ export class Matrix<T = unknown> {
   }
 
   eachAxisY(callback: (y: number) => void, reverse?: boolean) {
-    numberEach(0, this.height, callback, reverse);
+    numberEach(0, this.height - 1, callback, reverse);
   }
 
   eachAxisX(callback: (x: number) => void, reverse?: boolean) {
-    numberEach(0, this.width, callback, reverse);
+    numberEach(0, this.width - 1, callback, reverse);
   }
 
   each(callback: (item: T, index: number, location: MatrixLocation) => void) {

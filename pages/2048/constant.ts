@@ -19,6 +19,6 @@ export const DIRECTION = {
 export const DIRECT = {
   [DIRECTION.UP]: { x: 0, y: -1 },
   [DIRECTION.DOWN]: { x: 0, y: 1 },
-  [DIRECTION.LEFT]: { x: 1, y: 0 },
-  [DIRECTION.RIGHT]: { x: -1, y: 0 },
+  [DIRECTION.LEFT]: { x: -1, y: 0 },
+  [DIRECTION.RIGHT]: { x: 1, y: 0 },
 };
