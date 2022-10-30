@@ -73,9 +73,14 @@
 
 .tag {
    .br16();
-  font-size: 12px;
+  font-size: 13px;
   display: inline-block;
   padding: 2px 8px;
-  color: @n0;
-  background-color: @b500;
+  color: @b500;
+  border: 1px solid @b500;
+
+  &:hover {
+    color: @n0;
+    background-color: @b500;
+  }
 }

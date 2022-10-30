@@ -31,11 +31,17 @@ const Home = () => {
     Emit.emit(GLOBAL_EVENT_NAME.ROUTING_START);
   };
 
+  const handleFilter = (tags: string[]) => {
+    console.log(tags);
+  };
+
   return (
     <div className={styles.wrapper}>
       <NoteList
+        selectedTags={[]}
         list={sortNoteByUpdateTime}
         onClick={handleClick}
+        onFilter={handleFilter}
       />
     </div>
   );
