@@ -2,6 +2,7 @@ import React from "react";
 import classNames from "classnames";
 
 import styles from "./index.module.less";
+import { difference } from "lodash";
 
 export interface BaseNoteInfo {
   title: string;
@@ -69,7 +70,9 @@ const NoteList: React.FC<NoteListProps> = (props) => {
             {tags?.map((tag) => (
               <span
                 key={tag}
-                className={classNames(styles.tag)}
+                className={classNames(styles.tag, {
+                  [styles.active]: selectedTags.includes(tag),
+                })}
                 onClick={(e) => handleTagClick(e, tag)}
               >
                 {tag}
@@ -84,7 +87,20 @@ const NoteList: React.FC<NoteListProps> = (props) => {
     );
   };
 
-  return <ul className={styles.wrapper}>{list.map(renderItem)}</ul>;
+  return (
+    <ul className={styles.wrapper}>
+      {list
+        .filter((item) => {
+          if (!selectedTags.length) {
+            return true;
+          }
+          return (
+            difference(item.tags || [], selectedTags).length < item.tags.length
+          );
+        })
+        .map(renderItem)}
+    </ul>
+  );
 };
 
 export default NoteList;

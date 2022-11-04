@@ -1,4 +1,4 @@
-@import '../../styles/common.less';
+@import "../../styles/common.less";
 
 .wrapper {
   display: flex;
@@ -8,7 +8,7 @@
 }
 
 .item {
-   .br16();
+  .br16();
   border: 1px solid @n200;
   padding: 16px;
   margin-bottom: 16px;
@@ -56,7 +56,8 @@
   flex: 1;
 }
 
-.time, .createTime {
+.time,
+.createTime {
   font-size: 12px;
   color: @n400;
 }
@@ -72,7 +73,7 @@
 }
 
 .tag {
-   .br16();
+  .br16();
   font-size: 13px;
   display: inline-block;
   padding: 2px 8px;
@@ -80,6 +81,11 @@
   border: 1px solid @b500;
 
   &:hover {
+    color: @n0;
+    background-color: @b500;
+  }
+
+  &.active {
     color: @n0;
     background-color: @b500;
   }
