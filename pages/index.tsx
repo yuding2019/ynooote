@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { GLOBAL_EVENT_NAME } from "../common/constant";
 import Emit from "../common/emit";
+import { useTagFilter } from "../common/useTagFilter";
 
 import NoteList, { BaseNoteInfo } from "../components/NoteList";
 
@@ -33,6 +34,8 @@ const sortNoteByUpdateTime = [...gameList, ...manifest].sort((prev, next) => {
 const Home = () => {
   const router = useRouter();
 
+  const { tags, updateTags } = useTagFilter();
+
   const handleClick = (item: BaseNoteInfo) => {
     router.push(item.path);
     Emit.emit(GLOBAL_EVENT_NAME.ROUTING_START);
@@ -41,8 +44,10 @@ const Home = () => {
   return (
     <div className={styles.wrapper}>
       <NoteList
+        selectedTags={tags}
         list={sortNoteByUpdateTime}
         onClick={handleClick}
+        onFilter={updateTags}
       />
     </div>
   );

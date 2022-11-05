@@ -25,6 +25,6 @@ const plugins = [
     }
   ],
   [withMDX],
-]
+];
 
 module.exports = withPlugins(plugins, nextConfig);
