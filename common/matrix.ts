@@ -51,23 +51,23 @@ export class Matrix<T = unknown> {
     return this.width * this.height;
   }
 
+  each(callback: (item: T, index: number, location: MatrixLocation) => void) {
+    this.source.forEach((item, index) => {
+      const location = this.locate(index);
+      callback(item, index, location);
+    });
+  }
+
+  some(callback: (item: T) => boolean) {
+    return this.source.some((item) => callback(item));
+  }
+
   eachAxisY(callback: (y: number) => void, reverse?: boolean) {
     numberEach(0, this.height - 1, callback, reverse);
   }
 
   eachAxisX(callback: (x: number) => void, reverse?: boolean) {
     numberEach(0, this.width - 1, callback, reverse);
-  }
-
-  each(callback: (item: T, index: number, location: MatrixLocation) => void) {
-    this.eachAxisY((y) => {
-      this.eachAxisX((x) => {
-        const location = { x, y };
-        const index = this.index(location);
-        const current = this.source[index];
-        callback(current, index, location);
-      });
-    });
   }
 
   eachRow(
@@ -110,8 +110,8 @@ export class Matrix<T = unknown> {
     return x + y * this.width;
   }
 
-  location(index: number) {
-    if (index < 0 || index >= this.height) {
+  locate(index: number) {
+    if (index < 0 || index >= this.length) {
       return;
     }
     const x = index % this.width;
@@ -119,18 +119,24 @@ export class Matrix<T = unknown> {
     return { x, y };
   }
 
-  get(locate: number | MatrixLocation) {
-    if (typeof locate === 'number') {
-      return this.source[locate];
+  get(locate: number | MatrixLocation): T | undefined {
+    let index = typeof locate === 'number' ? locate : this.index(locate);
+    if (!this.isValidLocate(index)){
+      return;
     }
-    return this.source[this.index(locate)];
+    return this.source[index];
   }
 
   set(locate: number | MatrixLocation, data: T) {
-    if (typeof locate === 'number') {
-      this.source[locate] = data;
-    } else {
-      this.source[this.index(locate)] = data;
+    let index = typeof locate === 'number' ? locate : this.index(locate);
+    if (!this.isValidLocate(index)) {
+      return;
     }
+    this.source[index] = data;
+  }
+
+  isValidLocate(locate: number | MatrixLocation) {
+    const index = typeof locate === 'number' ? locate : this.index(locate);
+    return index >= 0 && index <= this.length;
   }
 }

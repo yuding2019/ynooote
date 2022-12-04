@@ -1,103 +1,123 @@
 import { Matrix, MatrixLocation, MatrixSize } from "../../common/matrix";
 import { random } from "../../common/util";
 
-import { View } from "./view";
 import { Cell } from "./cell";
 
-import { DIRECT, DIRECTION, GAME_SIZE } from "./constant";
+import { DIRECT, DIRECTION, GAME_BOARD_ID, GAME_SIZE } from "./constant";
 import { Direction } from "./type";
+import { bindKeydown, TransitionManage } from "./util";
+import { View } from "./view";
 
 export type GameSize = MatrixSize;
 
 export class GameModel {
   matrix: Matrix<Cell>;
   size: MatrixSize = GAME_SIZE.FOUR;
-  view: View;
 
-  isMoving: boolean;
+  isMoving = false;
+  isGameOver = false;
+  needRandomNewCell = false;
 
-  clearKey: () => void;
+  rootView: View;
 
-  init(size?: GameSize) {
+  private clearKeydownFunc: () => void;
+  private gameOverListener: () => void;
+
+  constructor() {
+    TransitionManage.onStart(() => {
+      this.isMoving = true;
+    });
+    TransitionManage.onEnd(() => {
+      this.isMoving = false;
+      if (this.needRandomNewCell) {
+        this.randomCell();
+        this.needRandomNewCell = false;
+      }
+    });
+  }
+
+  init = (size?: GameSize) => {
+    if (this.rootView) {
+      this.rootView.clear();
+    } else {
+      this.rootView = new View();
+    }
+
     const oldSize = this.size;
     this.size = size ?? oldSize;
     this.matrix = new Matrix(this.size);
+    this.isGameOver = false;
 
     this.matrix.each((_, index, location) => {
-      this.matrix.set(index, new Cell(location));
+      this.matrix.set(index, new Cell({ location, rootView: this.rootView }));
     });
 
-    this.random();
-    this.random();
+    this.randomCell();
+    this.randomCell();
 
-    if (!this.view) {
-      this.view = new View();
-    }
-
-    this.clearKey = bindKey((dir) => {
-      if (!this.isMoving) {
+    this.clearKeydownFunc = bindKeydown((dir) => {
+      if (!this.isMoving && !this.isGameOver) {
         this.move(dir);
+        this.validate();
       }
     });
+  };
 
-    this.view.clear();
-    this.render();
-  }
-
-  restart() {
+  restart = () => {
     this.init();
-  }
+  };
 
   // 判断移动的方向
   // 上下移动的时候需要以列为单位去判断每一列上面的cell是否可以合并，左右同理
   // 向上的时候需要从下往上遍历，所以会设置reverse，向右同理
-  move(direction: Direction) {
+  move = (direction: Direction) => {
     const inCol = [DIRECTION.UP, DIRECTION.DOWN].includes(direction);
     const direct = DIRECT[direction];
     const eachFn = inCol ? "eachCol" : "eachRow";
     const reverse = inCol ? direct.y === 1 : direct.x === 1;
 
     let moved = false;
-    this.matrix[eachFn]((currentCell, index) => {
-      const { prev, next } = this.findNextCell(currentCell, direct);
-      if (!next || currentCell === next) {
-        return;
-      }
-      if (!currentCell.value) {
+    this.matrix[eachFn]((currentCell) => {
+      if (currentCell.isEmpty()) {
         return;
       }
 
-      if (currentCell.value === next.value) {
-        currentCell.mergeTo(next);
-        moved = true;
-      } else if (next.canBeOverride) {
-        currentCell.recordMoveTo(next);
-        moved = true;
-      } else if (prev && prev.canBeOverride) {
-        currentCell.recordMoveTo(prev);
-        moved = true;
+      const { prev, next } = this.findNextCell(currentCell, direct);
+      if (!next) {
+        return;
       }
+
+      let moveResult = false;
+      if (currentCell.equal(next) && next.canMerge()) {
+        moveResult = currentCell.merge(next);
+      } else if (next.isEmpty()) {
+        moveResult = currentCell.move(next);
+      } else if (prev !== currentCell) {
+        moveResult = currentCell.move(prev);
+      }
+      moved = moved || moveResult;
     }, reverse);
 
-    if (moved) {
-      // this.random();
-      this.render();
-    }
-  }
+    this.needRandomNewCell = moved;
+    this.matrix.each((cell) => cell.reset());
+  };
 
-  clear() {
-    this.clearKey();
-    this.view.clear();
-  }
+  clear = () => {
+    this.clearKeydownFunc();
+  };
 
   // 找到第一个value不为0的cell，如果没有，就返回最后找到的
-  private findNextCell(startCell: Cell, direct: MatrixLocation) {
+  // prev如果存在的话，一定是空的
+  private findNextCell = (
+    start: Cell,
+    direct: MatrixLocation
+  ): { prev?: Cell; next?: Cell } => {
     let next = this.matrix.get({
-      x: startCell.location.x + direct.x,
-      y: startCell.location.y + direct.y,
+      x: start.location.x + direct.x,
+      y: start.location.y + direct.y,
     });
-    let prev = startCell;
-    while (next && next.canBeOverride) {
+    let prev: Cell | undefined;
+    while (next && next.isEmpty()) {
       const _next = this.matrix.get({
         x: next.location.x + direct.x,
         y: next.location.y + direct.y,
@@ -112,66 +132,46 @@ export class GameModel {
       prev,
       next,
     };
-  }
+  };
 
-  private random() {
+  private randomCell = () => {
     const length = this.matrix.length;
-    const value = Math.random() > 0.5 ? 4 : 2;
+
     let index = random(0, length);
     let cell = this.matrix.get(index);
-    while (cell.value !== 0) {
+    while (!cell.isEmpty()) {
       index = random(0, length);
       cell = this.matrix.get(index);
     }
-    this.matrix.get(index).value = value;
-  }
 
-  private clearUpdateCells(cells: Cell[]) {
-    cells.forEach((c) => c.clearStatus());
-  }
-
-  private render() {
-    this.isMoving = true;
-    const cells: Cell[] = [];
-    this.matrix.each((cell) => {
-      cells.push(cell);
-    });
-    this.view.update(cells);
-    this.clearUpdateCells(cells);
-    this.isMoving = false;
-  }
-}
-
-function bindKey(move: (dir: Direction) => void) {
-  const handler = (e: KeyboardEvent) => {
-    const { key } = e;
-    const upperKey = key.toUpperCase().replace("ARROW", "");
-    switch (upperKey) {
-      case "W":
-      case DIRECTION.UP:
-        e.preventDefault();
-        move(DIRECTION.UP);
-        break;
-      case "S":
-      case DIRECTION.DOWN:
-        e.preventDefault();
-        move(DIRECTION.DOWN);
-        break;
-      case "A":
-      case DIRECTION.LEFT:
-        e.preventDefault();
-        move(DIRECTION.LEFT);
-        break;
-      case "D":
-      case DIRECTION.RIGHT:
-        e.preventDefault();
-        move(DIRECTION.RIGHT);
-        break;
-    }
+    const value = this.randomValue();
+    this.matrix.get(index).setValue(value).render();
   };
-  window.addEventListener("keydown", handler);
 
-  return () => {
-    window.removeEventListener("keydown", handler);
+  private randomValue = () => {
+    return Math.random() > 0.5 ? 4 : 2;
+  };
+
+  private validate() {
+    const hasSameValueCell = this.matrix.some((cell) => {
+      const { x, y } = cell.location;
+      const top = this.matrix.get({ x, y: y - 1 });
+      const left = this.matrix.get({ x: x - 1, y });
+      const right = this.matrix.get({ x: x + 1, y });
+      const bottom = this.matrix.get({ x, y: y + 1 });
+
+      return [top, left, right, bottom]
+        .filter((cell) => !!cell)
+        .some((item) => cell.isEmpty() || cell.equal(item));
+    });
+
+    this.isGameOver = !hasSameValueCell;
+    if (!hasSameValueCell) {
+      this.gameOverListener();
+    }
+  }
+
+  onGameOver = (cb: () => void) => {
+    this.gameOverListener = cb;
   };
 }

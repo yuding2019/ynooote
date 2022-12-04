@@ -10,16 +10,29 @@ import { GameSize, GameModel } from "./model";
 const Game2048 = () => {
   const router = useRouter();
 
-  const [size, setSize] = useState<GameSize>(GAME_SIZE.FOUR);
   const gameRef = useRef<GameModel>(new GameModel());
+
+  const [size, setSize] = useState<GameSize>(GAME_SIZE.FOUR);
+  const [isGameOver, setIsGameOver] = useState(false);
+
+  useEffect(() => {
+    gameRef.current.onGameOver(() => {
+      setIsGameOver(true);
+    });
+  }, []);
 
   useEffect(() => {
     gameRef.current.init(size);
 
     return () => {
       gameRef.current.clear();
-    }
-  }, []);
+    };
+  }, [size]);
+
+  const handleRestart = () => {
+    setIsGameOver(false);
+    gameRef.current.init();
+  }
 
   const handleSizeSelect = (_size: GameSize) => {
     setSize(_size);
@@ -30,25 +43,26 @@ const Game2048 = () => {
   };
 
   const controlRender = () => {
-    return (
-      <div className={styles.control}>
-        <div className={styles.buttons}>
-          {Object.values(GAME_SIZE).map((_size, index) => {
-            return (
-              <div
-                key={index}
-                className={classNames(styles.btn, {
-                  [styles.btnActive]: size[0] === _size[0],
-                })}
-                onClick={() => handleSizeSelect(_size)}
-              >
-                {_size[0]} X {_size[1]}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
+    return null;
+    // return (
+    //   <div className={styles.control}>
+    //     <div className={styles.buttons}>
+    //       {Object.values(GAME_SIZE).map((_size, index) => {
+    //         return (
+    //           <div
+    //             key={index}
+    //             className={classNames(styles.btn, {
+    //               [styles.btnActive]: size[0] === _size[0],
+    //             })}
+    //             onClick={() => handleSizeSelect(_size)}
+    //           >
+    //             {_size[0]} X {_size[1]}
+    //           </div>
+    //         );
+    //       })}
+    //     </div>
+    //   </div>
+    // );
   };
 
   const gameRender = () => {
@@ -57,6 +71,12 @@ const Game2048 = () => {
 
     return (
       <div className={styles.background}>
+        <div
+          className={classNames(styles.gameOver, { [styles.gameOverShow]: isGameOver })}
+        >
+          <span>Game Over</span>
+          <div className={styles.restart} onClick={handleRestart}>再来一次</div>
+        </div>
         <div id={GAME_BOARD_ID} />
         {rows.map((row, rowIndex) => {
           return (
