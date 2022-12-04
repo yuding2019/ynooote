@@ -23,7 +23,8 @@ const gameList = [
     tags: ["web game"],
     path: "/2048",
     createTime: "2022-10-22 16:01",
-    img: "/images/mine-sweeper.png",
+    updateTime: "2022-12-4 12:36",
+    img: "/images/2048.png",
   },
 ];
 
