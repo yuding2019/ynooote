@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 function syncTags(tags: string[]) {
   const query = tags.length
@@ -32,7 +32,7 @@ function getTagsFromUrl() {
 export function useTagFilter() {
   const [tags, setTags] = useState<string[]>([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const _tags = getTagsFromUrl();
     setTags(_tags);
   }, []);
