@@ -1,3 +1,4 @@
+import { noop } from "lodash";
 import { useLayoutEffect, useState } from "react";
 
 function syncTags(tags: string[]) {
@@ -24,15 +25,24 @@ function getTagsFromUrl() {
     return entry.startsWith("tags");
   })[0];
   if (tagsQuery) {
-    return decodeURIComponent(tagsQuery.replace('tags=', '')).split('&');
+    return decodeURIComponent(tagsQuery.replace("tags=", "")).split("&");
   }
   return [];
+}
+
+function isBrowser() {
+  return !!(
+    typeof window !== "undefined" &&
+    window.document &&
+    window.document.createElement
+  );
 }
 
 export function useTagFilter() {
   const [tags, setTags] = useState<string[]>([]);
 
-  useLayoutEffect(() => {
+  const _useLayoutEffect = isBrowser() ? useLayoutEffect : noop;
+  _useLayoutEffect(() => {
     const _tags = getTagsFromUrl();
     setTags(_tags);
   }, []);
