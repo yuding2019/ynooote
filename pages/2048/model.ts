@@ -1,9 +1,10 @@
+import { noop } from "lodash";
 import { Matrix, MatrixLocation, MatrixSize } from "../../common/matrix";
 import { random } from "../../common/util";
 
 import { Cell } from "./cell";
 
-import { DIRECT, DIRECTION, GAME_BOARD_ID, GAME_SIZE } from "./constant";
+import { DIRECT, DIRECTION, GAME_SIZE } from "./constant";
 import { Direction } from "./type";
 import { bindKeydown, TransitionManage } from "./util";
 import { View } from "./view";
@@ -20,8 +21,8 @@ export class GameModel {
 
   rootView: View;
 
-  private clearKeydownFunc: () => void;
-  private gameOverListener: () => void;
+  private clearKeydownFunc: () => void = noop;
+  private gameOverListener: () => void = noop;
 
   constructor() {
     TransitionManage.onStart(() => {

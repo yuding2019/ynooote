@@ -6,6 +6,7 @@ import { GAME_BOARD_ID, GAME_SIZE } from "./constant";
 
 import styles from "./index.module.less";
 import { GameSize, GameModel } from "./model";
+import { isPC } from "../../common/util";
 
 const Game2048 = () => {
   const router = useRouter();
@@ -22,7 +23,9 @@ const Game2048 = () => {
   }, []);
 
   useEffect(() => {
-    gameRef.current.init(size);
+    if (isPC()) {
+      gameRef.current.init(size);
+    }
 
     return () => {
       gameRef.current.clear();
@@ -32,7 +35,7 @@ const Game2048 = () => {
   const handleRestart = () => {
     setIsGameOver(false);
     gameRef.current.init();
-  }
+  };
 
   const handleSizeSelect = (_size: GameSize) => {
     setSize(_size);
@@ -66,16 +69,24 @@ const Game2048 = () => {
   };
 
   const gameRender = () => {
+    if (!isPC()) {
+      return <div className="body">暂时只支持在PC端访问</div>;
+    }
+
     const rows = Array.from({ length: size[0] });
     const cols = Array.from({ length: size[1] });
 
     return (
       <div className={styles.background}>
         <div
-          className={classNames(styles.gameOver, { [styles.gameOverShow]: isGameOver })}
+          className={classNames(styles.gameOver, {
+            [styles.gameOverShow]: isGameOver,
+          })}
         >
           <span>Game Over</span>
-          <div className={styles.restart} onClick={handleRestart}>再来一次</div>
+          <div className={styles.restart} onClick={handleRestart}>
+            再来一次
+          </div>
         </div>
         <div id={GAME_BOARD_ID} />
         {rows.map((row, rowIndex) => {
