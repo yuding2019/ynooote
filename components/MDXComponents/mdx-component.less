@@ -59,7 +59,7 @@
 .pre {
   .br8();
   padding: 16px;
-  border: 1px solid @n200;
+  border: 1px solid @n100;
   margin: 8px 0;
   font-family: @codeFont, @fontFamily;
   font-size: 13px;
@@ -67,12 +67,12 @@
   overflow: auto;
 
   &:hover {
-    border-color: @n100;
+    border-color: @n300;
   }
 
   .code-line {
     &:hover .code-line-order {
-      color: @n600;
+      color: @b600;
     }
 
     .code-line-order {
@@ -83,48 +83,49 @@
       padding-right: 6px;
       user-select: none;
       border-right: 1px solid @n50;
-      color: @n100;
+      color: @n300;
     }
   }
 }
 
 .p {
-  line-height: 1.7;
+  .body();
   padding: 4px 0;
-  color: @n500;
 
   &:hover {
-    color: @n800;
-    background-color: @n100;
+    background-color: @n0;
   }
 }
 
+strong {
+  .head6();
+}
+
 .header {
-  font-weight: 500;
-  margin-top: 16px;
+  margin-top: @size16;
 
   &.h1 {
-    font-size: 26px;
+    .head1();
   }
 
   &.h2 {
-    font-size: 24px;
+    .head2();
   }
 
   &.h3 {
-    font-size: 22px;
+    .head3();
   }
 
   &.h4 {
-    font-size: 20px;
+    .head4();
   }
 
   &.h5 {
-    font-size: 18px;
+    .head5();
   }
 
   &.h6 {
-    font-size: 16px;
+    .head6();
   }
 }
 
@@ -140,22 +141,21 @@
 }
 
 .ul {
+  .body();
   padding: 6px 0;
   padding-left: 24px;
 
   .li {
     padding: 4px 0;
     line-height: 1.7;
-    list-style: armenian;
-    color: @n500;
+    list-style: decimal;
 
     &:last-child {
       margin-bottom: 0;
     }
 
     &:hover {
-      color: @n800;
-      background-color: @n50;
+      background-color: @n0;
     }
   }
 }

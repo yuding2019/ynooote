@@ -1,60 +1,54 @@
-@size-xsm: 4px;
-@size-sm: 6px;
-@size: 8px;
-@size-md: 12px;
-@size-lg: 16px;
+@size04: 4px;
+@size08: 8px;
+@size12: 12px;
+@size14: 14px;
+@size16: 16px;
+@size20: 20px;
+@size24: 24px;
+@size28: 28px;
+@size32: 32px;
 
-@padding-sm: 8px;
-@padding: 16px;
-@padding-md: 24px;
-@padding-lg: 32px;
-
-@margin-sm: 8px;
-@margin: 16px;
-@margin-md: 24px;
-@margin-lg: 32px;
-
-.brTopLeft(@r: @size-xsm) {
+.brTopLeft(@r: @size04) {
   border-top-left-radius: @r;
 }
 
-.brTopRight(@r: @size-xsm) {
+.brTopRight(@r: @size04) {
   border-top-right-radius: @r;
 }
 
-.brBottomLeft(@r: @size-xsm) {
+.brBottomLeft(@r: @size04) {
   border-bottom-left-radius: @r;
 }
 
-.brBottomRight(@r: @size-xsm) {
+.brBottomRight(@r: @size04) {
   border-bottom-right-radius: @r;
 }
 
-.brTop(@r: @size-xsm) {
+.brTop(@r: @size04) {
   .brTopLeft(@r);
   .brTopRight(@r);
 }
 
-.brBottom(@r: @size-xsm) {
+.brBottom(@r: @size04) {
   .brBottomLeft(@r);
   .brBottomRight(@r);
 }
 
-.br(@r: @size-xsm) {
+.br(@r: @size04) {
   .brTop(@r);
   .brBottom(@r);
 }
 
 .br8 {
-  .br(@size);
+  .br(@size08);
 }
 
 .br12 {
-  .br(@size-md);
+  .br(@size12);
 }
 
 .br16() {
-  .br(@size-lg);
+  .br(@size16);
 }
 
 @n0: #fff;
@@ -148,10 +142,53 @@
 
 @mainWidth: 820px;
 
-@globalBg: @n100;
+@globalBg: @n50;
 
 @codeFont: 'JetBrains Mono';
 
-@fontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-  "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
-  sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+@fontFamily: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Helvetica, Arial', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+
+.font(@s, @w, @c) {
+  font-size: @s;
+  font-weight: @w;
+  color: @c;
+  font-family: @fontFamily;
+  -webkit-font-smoothing: antialiased;
+}
+
+.head0 {
+  .font(32px, 100, @n900);
+}
+
+.head1 {
+  .font(26px, 350, @n900);
+}
+
+.head2 {
+  .font(24px, 350, @n900);
+}
+
+.head3 {
+  .font(22px, 350, @n900);
+}
+
+.head4 {
+  .font(20px, 350, @n900);
+}
+
+.head5 {
+  .font(18px, 350, @n900);
+}
+
+.head6 {
+  .font(16px, 350, @n900);
+}
+
+.body {
+  .font(16px, 200, @n700);
+  line-height: 32px;
+}
+
+.desc {
+  .font(12px, 200, @n500);
+}

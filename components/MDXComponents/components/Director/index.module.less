@@ -15,14 +15,8 @@
   border: 1px solid @n200;
 }
 
-.header {
-  padding: 16px;
-  background-color: @n0;
-  border-bottom: 1px solid @n50;
-}
-
 .content {
-  padding: 16px 8px;
+  padding: @size08;
   max-height: 520px;
   overflow-y: auto;
   background-color: @n0;
@@ -30,7 +24,8 @@
 
 .item {
   .br8();
-  padding: 8px;
+  .body();
+  padding: @size04;
   position: relative;
   cursor: pointer;
   overflow: hidden;
@@ -38,11 +33,11 @@
   text-overflow: ellipsis;
 
   &:hover {
-    background-color: @n50;
+    background-color: @b50;
   }
 
   &.active {
-    background-color: @b50;
+    background-color: @b100;
     color: @b600;
   }
 }

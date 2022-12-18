@@ -7,28 +7,28 @@
 
 .content {
   width: fit-content;
-  padding-top: @padding-lg;
+  padding-top: @size32;
   margin: 0 auto;
 }
 
 .control {
   .br16();
   background-color: @n0;
-  padding: @padding;
-  margin-bottom: @margin;
+  padding: @size16;
+  margin-bottom: @size16;
   display: flex;
 
   .buttons {
     font-size: 15px;
     font-family: @codeFont;
-    padding-right: @padding;
+    padding-right: @size16;
     border-right: 1px solid @n50;
-    margin-right: @margin;
+    margin-right: @size16;
 
     .btn {
       .br8();
-      padding: @padding-sm @padding;
-      margin-bottom: @margin-sm;
+      padding: @size08 @size16;
+      margin-bottom: @size08;
       cursor: pointer;
       user-select: none;
 
@@ -51,7 +51,7 @@
 .background {
   .br16();
   position: relative;
-  padding: @padding;
+  padding: @size16;
   background-color: #bbada0;
   width: fit-content;
   height: fit-content;
@@ -63,7 +63,7 @@
     display: flex;
     user-select: none;
     pointer-events: none;
-    margin-bottom: @margin;
+    margin-bottom: @size16;
 
     &:last-child {
       margin: 0;
@@ -75,7 +75,7 @@
     width: 100px;
     height: 100px;
     background-color: #d6c8bb;
-    margin-right: @margin;
+    margin-right: @size16;
     pointer-events: none;
     user-select: none;
 
@@ -160,11 +160,11 @@
 
   .restart {
     .br16();
-    margin-top: @margin;
+    margin-top: @size16;
     font-family: @fontFamily;
     font-size: 16px;
     font-weight: 400;
-    padding: @padding-sm @padding-lg;
+    padding: @size08 @size32;
     border: 1px solid @n300;
     background-color: @n0;
     cursor: pointer;

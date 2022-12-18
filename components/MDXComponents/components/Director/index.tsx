@@ -118,10 +118,9 @@ const Director = () => {
 
   return (
     <div className={styles.wrapper}>
-      <header className={styles.header}>目录</header>
       <div className={styles.content} ref={contentRef}>
         {headers.map((item) => {
-          const currentLevel = item.level - minLevel + 1;
+          const currentLevel = item.level - minLevel;
           return (
             <div
               className={classNames(styles.item, {
@@ -130,8 +129,7 @@ const Director = () => {
               id={item.id}
               key={item.id}
               style={{
-                paddingLeft: currentLevel * 8,
-                fontWeight: 600 - item.level * 50,
+                paddingLeft: currentLevel ? currentLevel * 16 : 4,
               }}
               onClick={() => handleClick(item)}
               title={item.text}
