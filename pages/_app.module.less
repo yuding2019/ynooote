@@ -1,4 +1,4 @@
-@import '../styles/common.less';
+@import "../styles/common.less";
 
 .wrap {
   width: 100%;
@@ -6,6 +6,10 @@
   min-width: 1440px;
   overflow: hidden;
   background-color: @globalBg;
+
+  @media screen and (max-width: 1440px) {
+    min-width: 100%;
+  }
 }
 
 .contentWrap {

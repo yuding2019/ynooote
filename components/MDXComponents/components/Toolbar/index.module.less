@@ -8,6 +8,7 @@
   display: inline-flex;
   flex-direction: column;
   align-items: flex-end;
+  z-index: 99;
 
   .tool {
     .br16();
@@ -30,10 +31,8 @@
       border-color: @b500;
     }
   }
-}
 
-@media screen and (max-width: 1440px) {
-  .toolbar {
+  @media screen and (max-width: 1440px) {
     width: fit-content;
     padding-left: @size16;
   }

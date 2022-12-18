@@ -1,5 +1,6 @@
 import { noop } from "lodash";
 import { useLayoutEffect, useState } from "react";
+import { isBrowser } from "./util";
 
 function syncTags(tags: string[]) {
   const query = tags.length
@@ -28,14 +29,6 @@ function getTagsFromUrl() {
     return decodeURIComponent(tagsQuery.replace("tags=", "")).split("&");
   }
   return [];
-}
-
-function isBrowser() {
-  return !!(
-    typeof window !== "undefined" &&
-    window.document &&
-    window.document.createElement
-  );
 }
 
 export function useTagFilter() {
