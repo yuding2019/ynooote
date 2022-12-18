@@ -1,9 +1,5 @@
 @import '../../../../styles/common.less';
 
-.empty {
-  width: 294px;
-}
-
 .wrapper {
   width: 294px;
   position: sticky;
@@ -13,6 +9,12 @@
    .br16();
   overflow: hidden;
   border: 1px solid @n200;
+}
+
+@media screen and (max-width: 1440px) {
+  .wrapper {
+    display: none;
+  }
 }
 
 .content {
