@@ -58,6 +58,7 @@
   align-items: flex-start;
 
   @media screen and (max-width: 768px) {
+    .head6();
     flex-direction: column;
     gap: @size16;
   }
@@ -94,9 +95,10 @@
 
 .tag {
   .br16();
+  line-height: 20px;
   font-size: 13px;
   display: inline-block;
-  padding: 2px 8px;
+  padding: 0 @size08;
   color: @b500;
   border: 1px solid @b500;
 

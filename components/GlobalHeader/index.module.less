@@ -6,12 +6,48 @@
   position: sticky;
   top: 0;
   z-index: 99;
-  background-color: @n0;
-  box-shadow: 0 1px 4px 2px @n200;
+  box-shadow: 0 1px 2px 2px @n100;
+  
+  &::after {
+    position: absolute;
+    opacity: 0.06;
+    backdrop-filter: blur(6px);
+    background: @pp500;
+    content: '';
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    animation: bg infinite 5s ease-in-out;
+
+    @keyframes bg {
+      0% {
+        background: @pp500;
+      }
+
+      25% {
+        background: @r500;
+      }
+
+      50% {
+        background: @pp500;
+      }
+
+      75% {
+        background: @b500;
+      }
+
+      100% {
+        background: @i500;
+      }
+    }
+  }
 }
 
 .navWrap {
   display: flex;
+  position: relative;
   align-items: center;
   width: @mainWidth;
   height: 68px;
@@ -19,6 +55,8 @@
   font-size: 22px;
   font-weight: lighter;
   user-select: none;
+  z-index: 1;
+  padding: 0 @size16;
 
   @media screen and (max-width: 1440px) {
     width: 100%;
