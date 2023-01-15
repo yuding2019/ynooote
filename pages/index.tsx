@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
+import { CanvasPlatform, CanvasLine } from "../common/canvas";
 import { GLOBAL_EVENT_NAME } from "../common/constant";
 import Emit from "../common/emit";
 import { useTagFilter } from "../common/useTagFilter";
@@ -42,14 +44,42 @@ const Home = () => {
     Emit.emit(GLOBAL_EVENT_NAME.ROUTING_START);
   };
 
+  const ref = useRef<any>(null);
+  const platformRef = useRef<CanvasPlatform>();
+  useEffect(() => {
+    const platform = new CanvasPlatform({ container: ref.current });
+
+    platform.appendNode(
+      new CanvasLine({
+        id: platform.id(),
+        points: Array.from({ length: 10 }, (_, index) => {
+          return {
+            id: platform.id().toString(),
+            x: index * 10,
+            y: ~~(Math.random() * 100),
+          };
+        }),
+      })
+    );
+
+    platformRef.current = platform
+    return () => {
+      platformRef.current.release();
+    };
+  }, []);
+
   return (
     <div className={styles.wrapper}>
-      <NoteList
+      <div
+        ref={ref}
+        style={{ width: 300, height: 400, margin: "auto", background: "#eee", overflow: 'visible', zIndex: 99 }}
+      />
+      {/* <NoteList
         selectedTags={tags}
         list={sortNoteByUpdateTime}
         onClick={handleClick}
         onFilter={updateTags}
-      />
+      /> */}
     </div>
   );
 };
