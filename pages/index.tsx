@@ -55,7 +55,7 @@ const Home = () => {
         points: Array.from({ length: 10 }, (_, index) => {
           return {
             id: platform.id().toString(),
-            x: index * 10,
+            x: index * 30,
             y: ~~(Math.random() * 100),
           };
         }),

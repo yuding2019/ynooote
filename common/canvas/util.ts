@@ -10,3 +10,8 @@ export function getIdFromRGB(rgb: number[]) {
   const hexB = b.toString(16).padStart(2, '0');
   return parseInt(`${hexR}${hexG}${hexB}`, 16);
 }
+
+export function getPointRGBFromRenderContext(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
+  return [r, g, b];
+}

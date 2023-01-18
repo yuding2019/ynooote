@@ -1,6 +1,6 @@
-import { isString, throttle } from "lodash";
+import { isString, throttle, random } from "lodash";
 import { CanvasBaseNode } from "./node";
-import { getIdFromRGB } from "./util";
+import { getIdFromRGB, getPointRGBFromRenderContext } from "./util";
 
 export interface CanvasPlatformConfig {
   container?: HTMLElement | string;
@@ -21,9 +21,9 @@ export class CanvasPlatform {
   private container: HTMLElement;
   private config: CanvasPlatformConfig;
 
-  private isNodeAppending = false;
   private __uniqId = 1;
-  private activeNodeIds: number[] = [];
+
+  private __prevHoverId: number = -1;
 
   width = 0;
   height = 0;
@@ -66,12 +66,11 @@ export class CanvasPlatform {
     this.container = container;
 
     this.offscreenCanvas = canvas.cloneNode() as HTMLCanvasElement;
-    const offscreenCtx = this.offscreenCanvas.getContext('2d');
+    const offscreenCtx = this.offscreenCanvas.getContext("2d");
     offscreenCtx.scale(this.dpr, this.dpr);
     this.offscreenCtx = offscreenCtx;
 
     container.appendChild(canvas);
-    container.appendChild(this.offscreenCanvas);
   }
 
   private initListener() {
@@ -79,18 +78,41 @@ export class CanvasPlatform {
       return;
     }
     const handleMouseMove = throttle((e: MouseEvent) => {
-      const { offsetX, offsetY } = e;
+      const rgb = getPointRGBFromRenderContext(
+        this.offscreenCtx,
+        e.offsetX * this.dpr,
+        e.offsetY * this.dpr
+      );
+      const hoverId = getIdFromRGB(rgb);
+      const isNewHoverId =
+        this.__prevHoverId !== -1 && this.__prevHoverId !== hoverId;
+      console.log(
+        this.__prevHoverId,
+        hoverId,
+        [...this.nodeMap.values()].map((v) => v.id)
+      );
+      if (!this.nodeMap.has(hoverId)) {
+        if (isNewHoverId) {
+          this.render();
+        }
+        return;
+      }
+      if (isNewHoverId) {
+        this.nodeMap.get(this.__prevHoverId)?.toggle();
+        this.nodeMap.get(hoverId).toggle();
+        this.render();
+      }
+      this.__prevHoverId = hoverId;
     }, 100);
 
-    this.canvas.addEventListener('mousemove', handleMouseMove);
+    this.canvas.addEventListener("mousemove", handleMouseMove);
   }
 
   id() {
     const id = this.__uniqId;
     this.__uniqId++;
 
-
-    return Number(~~(Math.random() * MAX_RANDOM)) + id;
+    return random(1, MAX_RANDOM - id) + id;
   }
 
   render() {
@@ -114,6 +136,7 @@ export class CanvasPlatform {
     });
     nodes.forEach((n) => {
       n.render(this.ctx);
+      n.render(this.offscreenCtx, true);
     });
   }
 

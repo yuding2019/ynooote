@@ -27,16 +27,26 @@ export class CanvasLine extends CanvasBaseNode {
     });
   }
 
-  render = (ctx: CanvasRenderingContext2D) => {
+  render = (ctx: CanvasRenderingContext2D, offscreen?: boolean) => {
     ctx.save();
 
+    if (offscreen) {
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = this.hexId;
+      this.path(ctx);
+      ctx.stroke();
+      ctx.restore();
+      return;
+    }
+
     if (this.active) {
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 5;
     } else {
       ctx.lineWidth = 1;
     }
 
     this.path(ctx);
+    console.log(ctx.lineWidth, this.active);
     ctx.stroke();
 
     ctx.restore();

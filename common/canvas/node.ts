@@ -12,18 +12,18 @@ export interface CanvasBaseNodeConfig {
 export class CanvasBaseNode<
   Config extends CanvasBaseNodeConfig = CanvasBaseNodeConfig
 > {
-  protected idToHex: string;
+  protected hexId: string;
   protected active = false;
   
   id: number;
   zIndex: CanvasNodeZIndex;
 
-  render(ctx: CanvasRenderingContext2D) {}
+  render(ctx: CanvasRenderingContext2D, offscreen?: boolean) {}
 
   constructor(config: Config) {
     this.id = config.id;
     this.zIndex = config.zIndex;
-    this.idToHex = getHexFromId(this.id);
+    this.hexId = getHexFromId(this.id);
   }
 
   setZIndex(zIndex: CanvasNodeZIndex) {
@@ -40,6 +40,7 @@ export class CanvasBaseNode<
 
   toggle() {
     this.active = !this.active;
+    console.log(this.active);
   }
 
   isTop() {
