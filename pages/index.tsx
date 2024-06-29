@@ -1,55 +1,56 @@
-import dayjs from "dayjs";
-import { useRouter } from "next/router";
-import { GLOBAL_EVENT_NAME } from "../common/constant";
-import Emit from "../common/emit";
-import { useTagFilter } from "../common/useTagFilter";
+import { useState } from 'react';
 
-import NoteList, { BaseNoteInfo } from "../components/NoteList";
+import Link from 'next/link';
 
-import manifest from "../public/manifest.2022.json";
-import styles from "./index.module.less";
+import stylex from '@stylexjs/stylex';
+import dayjs from 'dayjs';
+import { uniq } from 'lodash';
 
-const gameList = [
-  {
-    title: "扫雷",
-    tags: ["web game"],
-    path: "/sweeper",
-    createTime: "2022-09-26 13:58",
-    updateTime: "2022-09-26 16:31",
-    img: "/images/mine-sweeper.png",
-  },
-  {
-    title: "2048",
-    tags: ["web game"],
-    path: "/2048",
-    createTime: "2022-10-22 16:01",
-    updateTime: "2022-12-4 12:36",
-    img: "/images/2048.png",
-  },
-];
+import Filter from '../components/Filter';
+import Tag from '../components/Tag';
+import manifest from '../public/manifest.json';
 
-const sortNoteByUpdateTime = [...gameList, ...manifest].sort((prev, next) => {
+import { styles } from './index.stylex';
+
+const sorted = manifest.sort((prev, next) => {
   return dayjs(prev.createTime).isAfter(next.createTime) ? -1 : 1;
 });
 
+const tags = uniq(manifest.flatMap((item) => item.tags || []).filter(Boolean));
+
 const Home = () => {
-  const router = useRouter();
-
-  const { tags, updateTags } = useTagFilter();
-
-  const handleClick = (item: BaseNoteInfo) => {
-    router.push(item.path);
-    Emit.emit(GLOBAL_EVENT_NAME.ROUTING_START);
-  };
+  const [filters, setFilters] = useState([]);
 
   return (
-    <div className={styles.wrapper}>
-      <NoteList
-        selectedTags={tags}
-        list={sortNoteByUpdateTime}
-        onClick={handleClick}
-        onFilter={updateTags}
+    <div {...stylex.props(styles.wrapper)}>
+      <Filter
+        tags={tags}
+        selected={filters}
+        onChange={(selected) => setFilters(selected)}
       />
+      {sorted
+        .filter((item) => {
+          if (filters.length) {
+            return item.tags.some((tag) => filters.includes(tag));
+          }
+          return true;
+        })
+        .map((item) => {
+          return (
+            <div {...stylex.props(styles.note)} key={item.path}>
+              <Link href={item.path} {...stylex.props(styles.title)}>
+                {item.title}
+              </Link>
+              {item.tags.length > 0 && (
+                <div {...stylex.props(styles.tagsWrap)}>
+                  {item.tags.map((tag) => {
+                    return <Tag key={tag} content={tag} />;
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
     </div>
   );
 };

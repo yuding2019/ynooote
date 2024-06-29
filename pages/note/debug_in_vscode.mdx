@@ -1,9 +1,8 @@
-import MDXPageLayout from '../../components/MDXComponents';
+import MDXPageLayout from './components/MDXLayout';
 
 export const meta = {
   title: '【vscode】直接对tsx代码进行debug',
   tags: ['vscode', 'debug'],
-  img: '/images/vscode.png',
 };
 
 > 我知道vscode之前就可以直接debug代码了，但是我现在才使用这个配置并且成功调试👻👻👻👻
@@ -19,11 +18,10 @@ export const meta = {
 
 > 参考文档：[Debugging in VSCode](https://code.visualstudio.com/Docs/editor/debugging)，一些具体的配置信息也可以在文档里面找到
 
-##### 1、首先在根目录创建`.vscode/launch.json`文件
-可以手动创建，也可以在`vscode`侧边栏中`Run and Debug`中点击按钮自动创建
-![](/images/2022100101.png)
+##### 1、`launch.json`文件
 
-##### 2、在json中添加以下内容
+首先在根目录下创建`.vscode/launch.json`文件并在文件中中添加以下内容，`vscode`都会自动提示
+
 ```json
 {
   "version": "0.2.0",
@@ -44,10 +42,11 @@ export const meta = {
 }
 ```
 
-当然，这些内容`vscode`都会自动提示，基本上都可以开箱即用
-![](/images/2022100102.png)
+> 可以手动创建，也可以在`vscode`侧边栏中`Run and Debug`中点击按钮自动创建
+> ![](/images/2022100101.png)
 
 ##### 3、启动前端本地开发服务
+
 这个没什么好说的
 
 ##### 4、开始调试
@@ -64,4 +63,6 @@ export const meta = {
 ![](/images/2022100104.gif)
 其他的不用我多说了吧。
 
-export default ({ children }) => <MDXPageLayout meta={meta}>{children}</MDXPageLayout>;
+export default ({ children }) => (
+  <MDXPageLayout meta={meta}>{children}</MDXPageLayout>
+);

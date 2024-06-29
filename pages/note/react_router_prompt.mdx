@@ -1,17 +1,18 @@
-import MDXPageLayout from '../../components/MDXComponents';
+import MDXPageLayout from './components/MDXLayout';
 
 export const meta = {
   title: 'React Router中Prompt组件实现原理',
-  tags: ['React', 'React Router', 'History API', 'history'],
-  img: '',
+  tags: ['React', 'React Router', 'History API'],
 };
 
 # Prompt组件使用
 
 组件必填的prop`message`允许传入字符串或者一个方法：
+
 1. 如果是字符串，直接进行拦截，其提示就是浏览器原生的`window.confirm(message)`
 2. 如果回调返回字符串就和传入字符串的`message`一样
 3. 如果回调返回`true`表示允许跳转，返回`false`会拦截跳转但不**自动进行提示**
+
 ```ts
 <Prompt message="确认要离开吗" />
 
@@ -27,6 +28,7 @@ export const meta = {
 ```
 
 利用`message`回调返回`boolean`时可以进行拦截路由跳转但不提示消息的特性，可以结合组件库的`<Message />` `<Modal />`等组件，提供更友好的二次确认
+
 ```ts
 <>
   <Prompt
@@ -48,16 +50,18 @@ export const meta = {
 </>
 ```
 
-# history拦截路由跳转
+# 拦截路由跳转
+
 `React Router`使用的是`history`库，将浏览器原生的`History API`和`Location API`进行封装，抹平了其中的差异，向外统一暴露常用易用的api
 
-`history`基本原理是将部分原生API进行二次拦截，比如`history.push()`就对应`window.history.pushState()`。
+`history`基本原理是将部分原生API进行二次封装，比如`history.push()`就对应`window.history.pushState()`。
 
 #### 路由拦截原理
 
 本质上就在对部分操作进行拦截，满足条件才调用原生API，否则就不调用
 
 举个例子，比如我们想要数组只能放入满足条件的项，其余项都需要二次确认才能放入，就可以拦截`Array.push()`
+
 ```ts
 const originPush = Array.prototype.push;
 function allowPush(ctx, item) {
@@ -66,10 +70,11 @@ function allowPush(ctx, item) {
   }
 }
 
-Array.prototype.push = function(item) {
+Array.prototype.push = function (item) {
   allowPush(this, item);
-}
+};
 ```
+
 ![](../images/2022070101.png)
 
 #### push/replace操作拦截
@@ -98,24 +103,27 @@ Array.prototype.push = function(item) {
 
 > 蓝色框：`history.location`指向的url
 > 橙色框：`window.history.location`指向的url
+> `history`库会为所有通过其api跳转的url生成一个唯一的`key`，就保存在`historyState`上
 
 可以看到，当调用`history.goBack()`瞬间，库内部的`location`状态其实和`window.history.location`状态不匹配。
 
-此时`history`库在`popstate`事件中会进行相同的判断处理（不是拦截，更像马后炮）：
-1. 判断结果为`true`，表示允许跳转，直接更新内部的`location`状态，此时两边状态就统一了
-2. 判断结果为`false`，表示不允许跳转，此时利用两边状态不同步，计算得到一个`delta`值，直接调用`window.history.go(delta)`回退
+此时`history`库在`popstate`事件中，根据 state 中的 key 从内部 url 栈中找到对应的 url，然后会进行和上面相同的判断逻辑处理：
 
-> 比如在上图的情况下，需要回退的计算过程：
-> 1. `window.history.location`指向`url1`，得到一个`index1`为`1`
-> 2. `history.location`指向`url2`，得到一个`index2`为`2`
-> 3. 那么`delta = index2 - index1`得到`delta === 1`
-> 4. 再调用`window.history.go(1)`就将`window.history.location`重新指向了`url2`
+1. 判断结果为`true`，表示允许跳转，直接更新内部的`location`状态，此时两边状态就统一了
+2. 判断结果为`false`，表示不允许跳转，此时利用两边状态不同步，计算得到一个`delta`值，再次直接调用`window.history.go(delta)`回到当前页面
+
+比如在上图的情况下，需要回退的计算过程：
+
+1. `window.history.location`指向`url1`，得到一个`index1`为`1`
+2. `history.location`指向`url2`，得到一个`index2`为`2`
+3. 那么`delta = index2 - index1`得到`delta === 1`
+4. 再调用`window.history.go(1)`就将`window.history.location`重新指向了`url2`
 
 > 在回退的场景中，有个明显特征就是：此时`popstate`事件会被触发两次
 
 # 踩坑记录
 
-我司系统中在处理页面筛选条件时，为了保证页面刷新后也能保留筛选条件，会调用`syncParam`类似的方法将筛选条件同步到url上，此时一个坑悄无声息地出现了。
+我司系统中在处理页面筛选条件时，为了保证页面刷新后也能保留筛选条件，会调用`syncParam`类似的方法将筛选条件同步到 url 上：
 
 ```ts
 function syncParam(params) {
@@ -123,9 +131,12 @@ function syncParam(params) {
 }
 ```
 
-该方法将当前url对应的`historyState`重置为空对象了，这时如果下一个路由页面中有使用`<Prompt />`且同时使用`history.goBack()`，就会发生意想不到的事情👽。
+这个方法将当前 url 对应的 historyState 重置为空对象，丢失了 key 值。
 
-> 上面没提到的点是`history`库会为所有通过其api跳转的url生成一个唯一的`key`，就保存在`historyState`上。在回退计算中，就是利用`historyState`中的`key`来计算的。此时被`syncParam`重置了，导致计算不出正确的`delta`，就不能正确回退了。
+如果这时后续页面中使用了`Prompt`组件，那么在触发过一次 prompt 后，后续需要多次调用`goBack`才能回到之前的页面，就是因为找不到正确的 url，`history`库内部的 url 栈和浏览器的history已经对应不上了。
+
 > ![](../images/can-use.jpeg)
 
-export default ({ children }) => <MDXPageLayout meta={meta}>{children}</MDXPageLayout>;
+export default ({ children }) => (
+  <MDXPageLayout meta={meta}>{children}</MDXPageLayout>
+);

@@ -1,6 +1,6 @@
 import { noop } from "lodash";
 import { useLayoutEffect, useState } from "react";
-import { isBrowser } from "./util";
+import { isBrowser } from "./utils";
 
 function syncTags(tags: string[]) {
   const query = tags.length

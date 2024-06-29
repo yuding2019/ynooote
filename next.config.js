@@ -1,13 +1,17 @@
-const withLess = require("next-with-less");
-const withPlugins = require("next-compose-plugins");
+const withPlugins = require('next-compose-plugins');
+const stylexPlugin = require('@stylexjs/nextjs-plugin');
 
 const withMDX = require('@next/mdx')({
   extension: /\.mdx?$/,
   options: {
     remarkPlugins: [],
     rehypePlugins: [],
-    providerImportSource: "@mdx-js/react",
+    providerImportSource: '@mdx-js/react',
   },
+});
+
+const withStylex = stylexPlugin({
+  rootDir: __dirname,
 });
 
 /**
@@ -15,19 +19,12 @@ const withMDX = require('@next/mdx')({
  */
 const nextConfig = {
   pageExtensions: ['tsx', 'mdx'],
+  output: 'export',
   experimental: {
     mdxRs: true,
   },
 };
 
-const plugins = [
-  [
-    withLess,
-    {
-      lessLoaderOptions: {},
-    }
-  ],
-  [withMDX],
-];
+const plugins = [[withMDX], [withStylex]];
 
 module.exports = withPlugins(plugins, nextConfig);
