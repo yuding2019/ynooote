@@ -31,10 +31,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+        with:
+          version: 8
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "18"
           cache: 'npm'
 
       - name: Restore cache
@@ -49,10 +54,10 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
 
       - name: Install
-        run: npm ci
+        run: pnpm i
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
 
       - name: Upload artifact
