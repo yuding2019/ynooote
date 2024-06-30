@@ -1,0 +1,143 @@
+import MDXPageLayout from './components/MDXLayout'
+
+export const meta = {
+  title: 'TypeChallenge - 困难难度个人题解：Vue types',
+  tags: ['TypeScript'],
+  img: '',
+};
+
+包含三道题：
+- [SimpleVue](https://tsch.js.org/6/play)：实现类 Vue 类型定义
+- [VueBasicProps](https://tsch.js.org/213/play)：在 SimpleVue 的基础上支持 props 参数
+- [Pinia](https://tsch.js.org/1290/play)：实现类 Pinia 类型定义
+
+# 前置 Type 知识
+## [在函数类型中声明 this](https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function)
+
+在 js 中 this 指向通常是不够明确的，但是在 ts 中，ts 能够根据上下文进行分析，推导出当前函数中 this 的类型。
+
+```ts
+const foo = {
+  bar: 'bar',
+  func1: () => {
+    console.log(this);
+    //           ^? undefined
+  },
+  func2() {
+    console.log(this);
+    //           ^? typeof foo
+  },
+}
+```
+
+当然，我们也能主动声明函数的 this 类型
+```ts
+function fun1(this: { foo: string }) {
+  console.log(this.foo);
+}
+
+// Error: An arrow function cannot have a 'this' parameter.
+const func2 = (this: { foo: string }) => {};
+```
+
+## [ThisType](https://www.typescriptlang.org/docs/handbook/utility-types.html#thistypetype)
+
+为了方便声明函数的 this 类型，ts 提供了 ThisType 工具类型，该工具类型用于在指定的类型中，将函数的 this 类型转为提供的类型，
+但是如果声明函数的时候已经提供了 this 类型，则无法转换。
+```ts
+type Method = {
+  foo: string;
+  func: () => void;
+}
+
+type Method2 = {
+  foo: string;
+  func: (this: Method) => void;
+}
+
+const method: Method = {
+  foo: '123',
+  func() {
+    this; // Method
+  }
+}
+
+const method2: Method & ThisType<{ far: number }> = {
+  foo: '123',
+  func() {
+    this; // { far: number }
+  }
+}
+
+const method3: Method2 & ThisType<{ far: number }> = {
+  foo: '123',
+  func() {
+    this; // Method
+  }
+}
+```
+
+# 题解
+
+## [SimpleVue](https://tsch.js.org/6/play)
+
+```ts
+declare function SimpleVue<D, C, M>(options: {
+  data: (this: never) => D,
+  // 将 computed 中函数的 this 类型声明为 data
+  // 也可以手动声明 { [K: string]: (this: D) => any }
+  // 如果在 computed 中也想要能通过 this 获取到其他 computed fn，则修改为 C & ThisType<C & D>
+  computed: C & ThisType<D>,
+  // 将 methods 中函数的 this 类型声明为 D & Computed<C> & M
+  // 就可以在 methods 中通过 this 获取到 data、computed 和其他 method
+  methods: M & ThisType<D & Computed<C> & M>,
+}): any
+
+// 将 computed 对象中的 key 和对应函数返回值组合成新类型
+// Computed<{ foo: () => string }> => { foo: string }
+type Computed<T> = T extends Record<infer FuncName, () => any> ? { [K in FuncName]: ReturnType<T[K]> } : never
+```
+
+## [VueBasicProps](https://tsch.js.org/213/play)
+
+```ts
+declare function VueBasicProps<P, D, C, M>(options: {
+  props: P,
+  // 手动将 data fn 的 this 类型声明为 props
+  data: (this: GetProps<P>) => D,
+  computed: C & ThisType<C & D>,
+  methods: M & ThisType<D & Computed<C> & M & GetProps<P>>,
+}): any
+
+type Computed<T> = T extends Record<infer FuncName, () => any> ? { [K in FuncName]: ReturnType<T[K]> } : never
+
+// vue props 是类似于 { prop1: String; prop2: { type: Number }; prop3: CustomClass }
+// 所以需要将其转为 { prop1: string; prop2: number; prop3: CustomClass }
+type GetProps<P> = P extends Record<infer K, any> ? { [Key in K]: GetPrimitiveType<GetPropType<P[Key]>> } : never
+
+// 从构造类型提取真实的 type
+type GetPropType<V> = V extends { type: infer T } ? T extends any[] ? GetConstructor<T[number]> : GetConstructor<T> : GetConstructor<V>;
+
+// 提取构造类型，得到类似 Boolean | Number | Date | RegExp | CustomClass
+type GetConstructor<C> = C extends { new (...args: any[]): infer O } ? O : any;
+
+// 获取原始值类型，将 String | Boolean | Number => string | number | boolean，其余类型直接返回
+type GetPrimitiveType<T> = T extends String ? string : T extends Number ? number : T extends Boolean ? boolean : T;
+```
+
+## [Pinia](https://tsch.js.org/1290/play)
+
+```ts
+declare function defineStore<State, Getter, Action>(store: {
+  id: string;
+  state: () => State,
+  // getter 中只能通过 this 读数据，无法修改数据，所以这里声明了 Readonly<State>
+  getters?: Getter & ThisType<Readonly<State> & Computed<Getter>>
+  // action 中可以通过 this 读写数据
+  actions?: Action & ThisType<State & Action>,
+}): State & Computed<Getter> & Action
+
+type Computed<T> = T extends Record<infer FuncName, () => any> ? { [K in FuncName]: ReturnType<T[K]> } : never
+```
+
+export default ({ children }) => <MDXPageLayout meta={meta}>{children}</MDXPageLayout>;

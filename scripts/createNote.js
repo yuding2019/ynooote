@@ -1,17 +1,21 @@
 const fs = require('fs');
 const path = require('path');
-const dayjs = require('dayjs');
 
-const currentMonth = dayjs().format('YYYYMM');
+let fileName = process.argv[2];
 
-const files = fs.readdirSync(path.resolve(process.cwd(), 'pages/note'));
+if (!fileName) {
+  console.log('请指定文件名');
+  process.exit();
+}
 
-const sameMonthFilesCount = files.filter((file) => file.startsWith(currentMonth)).length;
-const newNoteNumber = sameMonthFilesCount + 1;
-const newNoteMdxFileName = `${currentMonth}${newNoteNumber > 10 ? newNoteNumber : '0' + newNoteNumber}.mdx`;
+if (!fileName.endsWith('.mdx')) {
+  fileName += '.mdx';
+}
+
+console.log('新建笔记:', fileName);
 
 const initMdxContent = [
-  "import MDXPageLayout from '../../components/MDXComponents';",
+  "import MDXPageLayout from './components/MDXLayout'",
   "",
   "export const meta = {",
   "  title: '',",
@@ -25,4 +29,4 @@ const initMdxContent = [
   "",
 ].join('\n');
 
-fs.writeFileSync(path.resolve(process.cwd(), `pages/note/${newNoteMdxFileName}`), initMdxContent)
+fs.writeFileSync(path.resolve(process.cwd(), `pages/note/${fileName}`), initMdxContent)

@@ -60,10 +60,10 @@ export const mdxComponentStyles = stylex.create({
   },
 
   anchor: {
-    color: THEME_TOKENS.primaryTextColor,
+    color: '#2563eb',
     textDecoration: 'none',
     ':hover': {
-      color: THEME_TOKENS.primaryTextColorHover,
+      color: '#1d4ed8',
       textDecoration: 'underline',
     },
   },
@@ -98,6 +98,7 @@ export const mdxComponentStyles = stylex.create({
     whiteSpace: 'nowrap',
     maxWidth: '100%',
     overflow: 'auto',
+    background: '#f9fafb',
     border: '1px solid #e2e8f0',
   },
   codeLine: {
@@ -138,22 +139,27 @@ export const mdxComponentStyles = stylex.create({
     marginBottom: SPACING.sm,
     paddingLeft: SPACING.sm,
     position: 'relative',
+    display: 'flex',
     transition: 'all 0.15s',
     ':last-child': {
       marginBottom: 0,
     },
+    ':hover': {
+      color: THEME_TOKENS.primaryTextColorHover,
+    },
+  },
+  listItemOrder: {
+    display: 'flex',
+    alignItems: 'center',
+    width: 18,
+    height: 24,
+    alignSelf: 'start',
     '::before': {
-      position: 'absolute',
       content: '',
       width: 6,
       height: 6,
-      top: 8,
-      left: -6,
       borderRadius: '50%',
       background: 'currentColor',
-    },
-    ':hover': {
-      color: THEME_TOKENS.primaryTextColorHover,
     },
   },
 });

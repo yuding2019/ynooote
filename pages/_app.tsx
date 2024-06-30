@@ -50,7 +50,7 @@ const styles = stylex.create({
       width: '100%',
       height: 'fit-content',
       backgroundColor: 'rgba(255, 255, 255, 0.4)',
-      // ios只在-webkit前缀下支持backdrop-filter
+      // ios只在-webkit-前缀下支持backdrop-filter
       '-webkit-backdrop-filter': 'blur(16px)',
       backdropFilter: 'blur(16px)',
       position: 'sticky',
@@ -90,7 +90,7 @@ const styles = stylex.create({
     },
   },
   largeContent: {
-    width: '80%',
+    width: '99%',
     [SCREEN_BREAK_POINT]: {
       width: '100%',
     },

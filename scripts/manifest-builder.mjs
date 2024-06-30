@@ -126,11 +126,11 @@ function updateManifestItem(item, file) {
 function build() {
   const manifest = readManifest();
   const changedFiles = getFileChangeInfos();
-  console.log('changedFiles', changedFiles);
+  console.log('changedFiles', changedFiles, manifest);
   changedFiles.forEach((file) => {
     const { filePath, newFilePath = '' } = file;
     const old = manifest.find((item) => {
-      return filePath.includes(item.path) || newFilePath.includes(item.path);
+      return filePath.endsWith(`${item.path}.mdx`) || newFilePath.endsWith(`${item.path}.mdx`);
     });
     if (!old) {
       manifest.push(createManifestItem(filePath));
