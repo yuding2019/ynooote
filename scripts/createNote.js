@@ -15,7 +15,7 @@ if (!fileName.endsWith('.mdx')) {
 console.log('新建笔记:', fileName);
 
 const initMdxContent = [
-  "import MDXPageLayout from './components/MDXLayout'",
+  "import MDXPageLayout from './components/MDXLayout';",
   "",
   "export const meta = {",
   "  title: '',",

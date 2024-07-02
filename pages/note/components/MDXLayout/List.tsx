@@ -16,7 +16,7 @@ export const ListItem: React.FC<MDXComponentProps> = (props) => {
   return (
     <div {...stylex.props(mdxComponentStyles.listItem)}>
       <div {...stylex.props(mdxComponentStyles.listItemOrder)} />
-      {children}
+      <div>{children}</div>
     </div>
   );
 };

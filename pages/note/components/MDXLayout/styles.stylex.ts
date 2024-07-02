@@ -61,6 +61,7 @@ export const mdxComponentStyles = stylex.create({
 
   anchor: {
     color: '#2563eb',
+    display: 'inline',
     textDecoration: 'none',
     ':hover': {
       color: '#1d4ed8',
@@ -149,10 +150,11 @@ export const mdxComponentStyles = stylex.create({
     },
   },
   listItemOrder: {
-    display: 'flex',
+    display: 'inline-flex',
     alignItems: 'center',
     width: 18,
     height: 24,
+    flexShrink: 0,
     alignSelf: 'start',
     '::before': {
       content: '',
