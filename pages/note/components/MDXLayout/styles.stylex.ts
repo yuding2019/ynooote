@@ -5,6 +5,7 @@ import { SPACING, THEME_TOKENS } from '../../../../styles/variables.stylex';
 export const styles = stylex.create({
   wrapper: {
     padding: `${SPACING.xl} ${SPACING.exl}`,
+    paddingBottom: 128,
   },
   title: {
     fontSize: 32,

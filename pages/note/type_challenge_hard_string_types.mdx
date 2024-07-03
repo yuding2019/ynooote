@@ -1,0 +1,153 @@
+import MDXPageLayout from './components/MDXLayout'
+
+export const meta = {
+  title: 'TypeChallenge - 困难难度个人题解 string types',
+  tags: ['TypeScript'],
+};
+
+包含三道题：
+- [CapitalizeWords](https://tsch.js.org/112/play)：将字符串中的所有单词的首字母大写
+- [join](https://tsch.js.org/847/play)：实现一个类型安全的 join 工具函数类型声明
+- [DropString](https://tsch.js.org/2059/play)：将给定字符中字符串中删除
+
+# 类型知识
+
+## 字面量字符串类型
+
+ts 可以声明一个明确的字符串类型，在某些情况下也可以自动推导并将类型收窄为一个字面量类型。声明字面量类型后，只能将类型中的字符串赋值给变量
+
+```ts
+const str = 'abc'; // str 的类型为 'abc'
+
+type Size = 'sm' | 'md' | 'lg';
+
+const size1: Size = 'sm';
+
+// Error: Type '"xl"' is not assignable to type 'Size'
+const size2: Size = 'xl';
+```
+
+## 模板拼接与匹配
+
+ts 的字符串字面量类型也可以像 js 模板字符串那样进行拼接，形成一个新的字面量类型
+
+```ts
+type World = 'world';
+
+type Hello = `hello, ${World}`; // hello, world
+```
+
+借助 [条件类型](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html) 与 [infer](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#inferring-within-conditional-types) 关键字，
+我们可以对字符串类型进行编程处理，比如获取一个字符串第一个字符：
+
+```ts
+type FirstChar<S extends string> = S extends `${infer F}${infer RestString}` ? F : '';
+
+type First = FirstChar<'hello'>; // h
+```
+
+我们还可以根据字符串中的某些特殊字符，进行类似于模式匹配，比如从 query 中获取键值对
+
+```ts
+type Query<S extends string> = S extends `${infer K}=${infer V}`
+  ? V extends `${infer RealValue}&${infer RestQuery}`
+    ? { [Key in K]: RealValue } & Query<RestQuery>
+    : { [Key in K]: V }
+  : {};
+
+type QueryObj = Query<`id=123&mode=preview&editable=false`>;
+// { id: '123'; mode: 'preview'; editable: 'false' }
+```
+
+这里就类似于将字符串从 = 或者 & 断开，拆分为了两个类型，然后可以对新类型再进一步做判断。
+
+# 题解
+
+## [CapitalizeWords](https://tsch.js.org/112/play)
+
+```ts
+// 获取从字符串中将隔开，组件单个字母的联合类型
+type GetLetters<S = 'abcdefghijklmnopqrstuvwxyz'> = S extends `${infer L}${infer R}` ? L | GetLetters<R> : never;
+// 26英文字母联合类型，用于判断是否是字段，不是字母就认为是隔断字符，用于将字符串中的单词筛选出来
+type Letters = GetLetters;
+
+// 每次取一个字符，判断是否为字母，是就去取一个字符，不是就将当前的 Word 进行 Capitalize，然后和剩余字符串拼接气啦
+type ImplementCapitalizeWords<S extends string, Word extends string = ''> = S extends `${infer F}${infer RestString}`
+  ? Lowercase<F> extends Letters
+    ? ImplementCapitalizeWords<RestString, `${Word}${F}`>
+    : `${Capitalize<`${Word}${F}`>}${ImplementCapitalizeWords<RestString>}`
+  : Capitalize<Word>
+
+type CapitalizeWords<S extends string> = S extends ''
+  ? ''
+  : ImplementCapitalizeWords<S>;
+
+type Test = CapitalizeWords<'foo,bar hello'> // Foo,Bar Hello
+```
+
+这个类型的难点在于如何将字符串中的单词找出来，上面实现有点简单粗暴，其中字母判断是直接穷举了小写字母，从其他人的解答中发现了一种很巧妙的方法。
+ts 内置了 Uppercase 和 Lowercase 两个工具类型，用于将字母进行大小写转换，比如 Capitalize 就可以这么实现：
+
+```ts
+type Capitalize<S extends string> = S extends `${infer F}${infer R}` ? `${Uppercase<F>}${R}` : S;
+
+Capitalize<'foo'>; // Foo
+```
+
+但是这两个工具类型只对字母有效，也就是说，我们可以构造这个类型去判断：
+
+```ts
+type IsLetter<S extends string> = Uppercase<S> extends Lowercase<S> ? false : true;
+
+IsLetter<'a'>; // true
+IsLetter<'1'>; // false;
+```
+
+那么上面就可以优化为：
+
+```ts
+type ImplementCapitalizeWords<S extends string, Word extends string = ''> = S extends `${infer F}${infer RestString}`
+  ? IsLetter<F> extends true
+    ? ImplementCapitalizeWords<RestString, `${Word}${F}`>
+    : `${Capitalize<`${Word}${F}`>}${ImplementCapitalizeWords<RestString>}`
+  : Capitalize<Word>
+
+type CapitalizeWords<S extends string> = S extends ''
+  ? ''
+  : ImplementCapitalizeWords<S>;
+```
+
+## [join](https://tsch.js.org/847/play)
+
+```ts
+type Join<A extends any[], D extends string = ''> = A extends [infer F, ...infer R]
+  ? F extends string
+    ? R extends []
+      ? F
+      : `${F}${D}${Join<R, D>}`
+    : Join<R, D>
+  : '';
+
+declare function join<D extends string>(delimiter: D): <T extends string[]>(...parts: T) => Join<T, D>;
+
+const joinFn = join('-'); // <T>(...parts: T) => Join<T, '-'>
+const result = joinFn('a', 'b', 'c'); // a-b-c
+```
+
+这题其实比较简单，需要注意如何将连接符的类型传递下去，就类似与 js 的闭包，ts 可以将上下文提供的类型传递下去。
+
+## [DropString](https://tsch.js.org/2059/play)
+
+```ts
+type NeedDropChar<S extends string> = S extends `${infer F}${infer R}` ? F | NeedDropChar<R> : never;
+
+type DropString<S extends string, R extends string> = S extends `${infer F}${infer RestString}`
+  ? F extends NeedDropChar<R>
+    ? DropString<RestString, R>
+    : `${F}${DropString<RestString, R>}`
+  : S;
+```
+
+需要删除的字符可能有多个，所以就先将需要删除的字符拆分为单个字符的联合类型，然后在将给定的字符串一个字符一个字符的判断是否需要删除。
+
+export default ({ children }) => <MDXPageLayout meta={meta}>{children}</MDXPageLayout>;
