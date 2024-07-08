@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -5,7 +7,6 @@ import stylex from '@stylexjs/stylex';
 import dayjs from 'dayjs';
 import zhCN from 'dayjs/locale/zh-cn';
 
-import { isBrowser } from '../common/utils';
 import ContentNavigation from '../components/ContentNavigation';
 import { ContentNavigateProvider } from '../components/ContentNavigation/context';
 import './_app.css';
@@ -110,6 +111,15 @@ dayjs.locale(zhCN);
 
 const App = ({ Component, pageProps }) => {
   const router = useRouter();
+
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return <div>building...</div>
+  }
 
   const outOfIndexPage = router.pathname !== '/';
 

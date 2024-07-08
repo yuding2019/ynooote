@@ -1,6 +1,10 @@
 import stylex from '@stylexjs/stylex';
 
-import { SPACING, THEME_TOKENS } from '../../../../styles/variables.stylex';
+import {
+  FONT_SIZE,
+  SPACING,
+  THEME_TOKENS,
+} from '../../../../styles/variables.stylex';
 
 export const styles = stylex.create({
   wrapper: {
@@ -20,7 +24,7 @@ export const mdxComponentStyles = stylex.create({
     lineHeight: 2,
     fontWeight: 400,
     color: THEME_TOKENS.primaryTextColor,
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.md,
     textAlign: 'justify',
     ':hover': {
       color: THEME_TOKENS.primaryTextColorHover,
@@ -36,27 +40,27 @@ export const mdxComponentStyles = stylex.create({
     color: THEME_TOKENS.primaryTextColorHover,
   },
   heading1: {
-    fontSize: 24,
+    fontSize: FONT_SIZE.heading1,
     fontWeight: 500,
   },
   heading2: {
-    fontSize: 22,
+    fontSize: FONT_SIZE.heading2,
     fontWeight: 500,
   },
   heading3: {
-    fontSize: 20,
+    fontSize: FONT_SIZE.heading3,
     fontWeight: 500,
   },
   heading4: {
-    fontSize: 18,
+    fontSize: FONT_SIZE.heading4,
     fontWeight: 500,
   },
   heading5: {
-    fontSize: 16,
+    fontSize: FONT_SIZE.heading5,
     fontWeight: 500,
   },
   heading6: {
-    fontSize: 14,
+    fontSize: FONT_SIZE.heading6,
     fontWeight: 500,
   },
 
@@ -73,7 +77,7 @@ export const mdxComponentStyles = stylex.create({
   blockquote: {
     backgroundColor: THEME_TOKENS.backgroundColor,
     padding: SPACING.md,
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.md,
     position: 'relative',
     whiteSpace: 'pre-wrap',
     textAlign: 'justify',
@@ -95,7 +99,7 @@ export const mdxComponentStyles = stylex.create({
     fontSize: 13,
     borderRadius: 8,
     padding: SPACING.md,
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.md,
     position: 'relative',
     whiteSpace: 'nowrap',
     maxWidth: '100%',
@@ -126,12 +130,14 @@ export const mdxComponentStyles = stylex.create({
     '@media (max-width: 800px)': {
       maxWidth: '100%',
     },
+    borderRadius: 6,
+    boxShadow: '0 8px 15px -3px #e2e8f0, 0 4px 6px -4px #cbd5e1',
   },
 
   list: {
     fontSize: 16,
     lineHeight: 1.5,
-    marginBottom: SPACING.lg,
+    marginBottom: SPACING.md,
     padding: SPACING.md,
     borderRadius: 8,
     border: '1px solid #e2e8f0',

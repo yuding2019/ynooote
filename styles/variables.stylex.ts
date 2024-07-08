@@ -62,3 +62,30 @@ export const SPACING = defineVars({
     [SCREEN_BREAK_POINT]: '24px',
   },
 });
+
+export const FONT_SIZE = defineVars({
+  heading1: {
+    default: '22px',
+    [SCREEN_BREAK_POINT]: '20px',
+  },
+  heading2: {
+    default: '20px',
+    [SCREEN_BREAK_POINT]: '18px',
+  },
+  heading3: {
+    default: '18px',
+    [SCREEN_BREAK_POINT]: '16px',
+  },
+  heading4: {
+    default: '16px',
+    [SCREEN_BREAK_POINT]: '14px',
+  },
+  heading5: {
+    default: '15px',
+    [SCREEN_BREAK_POINT]: '13px',
+  },
+  heading6: {
+    default: '13px',
+    [SCREEN_BREAK_POINT]: '12px',
+  },
+});
