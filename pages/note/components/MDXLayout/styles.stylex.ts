@@ -117,6 +117,7 @@ export const mdxComponentStyles = stylex.create({
     width: 22,
     textAlign: 'end',
     marginRight: 6,
+    userSelect: 'none',
     paddingRight: 6,
     borderRight: '1px solid #e2e8f0',
     color: THEME_TOKENS.descriptionTextColor,

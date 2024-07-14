@@ -65,7 +65,8 @@ const styles = stylex.create({
     transform: 'translateX(-100%)',
     opacity: 0,
     animation: `${fadeIn} 0.3s ease-in forwards`,
-    marginBottom: SPACING.md,
+    padding: `${SPACING.sm} ${SPACING.md}`,
+    borderRadius: 8,
     fontSize: 14,
     fontWeight: 300,
     color: THEME_TOKENS.secondaryTextColor,
@@ -74,18 +75,10 @@ const styles = stylex.create({
     ':last-child': {
       marginBottom: 0,
     },
-    '::before': {
-      content: '',
-      position: 'absolute',
-      top: '50%',
-      left: -24,
-      width: 12,
-      height: 1,
-      opacity: 0.5,
-      backgroundColor: 'currentColor',
-    },
     ':hover': {
       color: THEME_TOKENS.secondaryTextColorHover,
+      background: '#e2e8f0',
+      backdropFilter: 'blur(24px)',
     },
   },
 
@@ -123,13 +116,12 @@ const styles = stylex.create({
     paddingRight: 18,
     marginBottom: SPACING.lg,
     cursor: 'pointer',
-    background: '#e2e8f0',
     display: 'flex',
     alignItems: 'center',
     whiteSpace: 'nowrap',
     fontFamily: 'JetBrains Mono',
     ':hover': {
-      background: '#cbd5e1',
+      background: '#e2e8f0',
     },
   },
   backIcon: {
