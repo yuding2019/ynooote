@@ -29,6 +29,11 @@ class MyDocument extends Document {
           defer
           data-widget-id="323b5e21-0614-4af3-a22c-b6597fbcfc62"
         />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9448338216770987"
+          crossOrigin="anonymous"
+        ></script>
       </Html>
     );
   }
