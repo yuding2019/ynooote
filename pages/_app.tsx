@@ -132,6 +132,7 @@ const App = ({ Component, pageProps }) => {
           href={`${process.env.BASE_PATH || ''}/favicon.ico`}
           type="image/x-icon"
         />
+        <meta name="google-site-verification" content="HRWXPoUq-hDGzLwQlK8QNFBIAWM9E7OluBbNQPopMjQ" />
       </Head>
 
       <ContentNavigateProvider>
