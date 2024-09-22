@@ -47,14 +47,14 @@ const styles = stylex.create({
   },
 
   show: {
-    padding: `${SPACING.xl} ${SPACING.exl}`,
+    padding: `${SPACING.xl} ${SPACING.lg}`,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
     backdropFilter: 'blur(16px)',
     zIndex: 10,
     opacity: 1,
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     '@media (max-width: 800px)': {
       display: 'none',
     },
@@ -68,7 +68,7 @@ const styles = stylex.create({
     padding: `${SPACING.sm} ${SPACING.md}`,
     borderRadius: 8,
     fontSize: 14,
-    fontWeight: 300,
+    fontWeight: 400,
     color: THEME_TOKENS.secondaryTextColor,
     position: 'relative',
     cursor: 'pointer',
@@ -83,8 +83,8 @@ const styles = stylex.create({
   },
 
   level1: {
-    fontSize: 16,
-    fontWeight: 400,
+    fontSize: 14,
+    fontWeight: 500,
   },
   level2: {
     marginLeft: 4,
@@ -193,13 +193,12 @@ const ContentNavigation: React.FC<ContentNavigationProps> = (props) => {
               key={navigate.id}
               {...stylex.props(
                 styles.navigate,
-                styles[`level${normalizeLevel(navigate.level)}`],
                 styles.animationDelay(index),
                 activeId === navigate.id && styles.activeNavigate,
               )}
               onClick={() => handleClick(navigate)}
             >
-              {navigate.title}
+              <span {...stylex.props(styles[`level${normalizeLevel(navigate.level)}`])}>{navigate.title}</span>
             </div>
           );
         })}

@@ -25,9 +25,9 @@ export const styles = create({
   title: {
     display: 'inline-block',
     color: THEME_TOKENS.primaryTextColor,
-    fontSize: 20,
+    fontSize: 22,
     lineHeight: 1.5,
-    fontWeight: 400,
+    fontWeight: 300,
     marginBottom: SPACING.md,
     cursor: 'pointer',
     textDecoration: 'none',

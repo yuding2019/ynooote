@@ -6,6 +6,7 @@ import { randomId } from '../../../../common/utils';
 import { useContentNavigationContext } from '../../../../components/ContentNavigation/context';
 import { MDXComponentProps } from './types';
 
+import { FONT } from '../../../../styles/variables.stylex';
 import { mdxComponentStyles } from './styles.stylex';
 
 const Heading: FC<MDXComponentProps & { level: number }> = (props) => {
@@ -36,10 +37,7 @@ const Heading: FC<MDXComponentProps & { level: number }> = (props) => {
   return cloneElement(<HeadTag />, {
     children,
     ref,
-    ...stylex.props(
-      mdxComponentStyles.heading,
-      mdxComponentStyles[`heading${level}`],
-    ),
+    ...stylex.props(mdxComponentStyles[`heading${level}`], FONT[`heading${level}`]),
   });
 };
 

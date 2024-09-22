@@ -1,20 +1,28 @@
 import stylex from '@stylexjs/stylex';
 
-import {
-  FONT_SIZE,
-  SPACING,
-  THEME_TOKENS,
-} from '../../../../styles/variables.stylex';
+import { SPACING, THEME_TOKENS } from '../../../../styles/variables.stylex';
 
 export const styles = stylex.create({
   wrapper: {
-    padding: `${SPACING.xl} ${SPACING.exl}`,
+    paddingTop: {
+      default: 64,
+      '@media (max-width: 800px)': SPACING.lg,
+    },
+    paddingLeft: SPACING.exl,
+    paddingRight: SPACING.exl,
     paddingBottom: 128,
+    maxWidth: 800,
+    backgroundColor: THEME_TOKENS.lightBackgroundColor,
   },
   title: {
-    fontSize: 32,
+    fontSize: {
+      default: 32,
+      '@media (max-width: 800px)': 24,
+    },
     fontWeight: 100,
     marginBottom: SPACING.xl,
+    paddingBottom: SPACING.lg,
+    borderBottom: `1px solid ${THEME_TOKENS.borderColor}`,
   },
 });
 
@@ -34,34 +42,29 @@ export const mdxComponentStyles = stylex.create({
     },
   },
 
-  heading: {
-    lineHeight: 2,
-    marginTop: SPACING.md,
-    color: THEME_TOKENS.primaryTextColorHover,
-  },
   heading1: {
-    fontSize: FONT_SIZE.heading1,
-    fontWeight: 500,
+    marginTop: SPACING.xl,
+    marginBottom: SPACING.lg,
   },
   heading2: {
-    fontSize: FONT_SIZE.heading2,
-    fontWeight: 500,
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.md,
   },
   heading3: {
-    fontSize: FONT_SIZE.heading3,
-    fontWeight: 500,
+    marginTop: SPACING.md,
+    marginBottom: SPACING.md,
   },
   heading4: {
-    fontSize: FONT_SIZE.heading4,
-    fontWeight: 500,
+    marginTop: SPACING.md,
+    marginBottom: SPACING.md,
   },
   heading5: {
-    fontSize: FONT_SIZE.heading5,
-    fontWeight: 500,
+    marginTop: SPACING.sm,
+    marginBottom: SPACING.sm,
   },
   heading6: {
-    fontSize: FONT_SIZE.heading6,
-    fontWeight: 500,
+    marginTop: SPACING.sm,
+    marginBottom: SPACING.sm,
   },
 
   anchor: {
@@ -78,6 +81,7 @@ export const mdxComponentStyles = stylex.create({
     backgroundColor: THEME_TOKENS.backgroundColor,
     padding: SPACING.md,
     marginBottom: SPACING.md,
+    display: 'flex',
     position: 'relative',
     whiteSpace: 'pre-wrap',
     textAlign: 'justify',
@@ -121,6 +125,11 @@ export const mdxComponentStyles = stylex.create({
     paddingRight: 6,
     borderRight: '1px solid #e2e8f0',
     color: THEME_TOKENS.descriptionTextColor,
+  },
+
+  code: {
+    color: THEME_TOKENS.primaryTextColorHover,
+    margin: `0 ${SPACING.sm}`,
   },
 
   image: {

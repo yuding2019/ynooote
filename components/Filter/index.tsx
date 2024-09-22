@@ -23,9 +23,10 @@ const styles = stylex.create({
     fontSize: 15,
     lineHeight: 1.5,
     color: THEME_TOKENS.primaryTextColor,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(16px)',
     position: 'sticky',
     top: 0,
-    backgroundColor: THEME_TOKENS.lightBackgroundColor,
     [SCREEN_BREAK_POINT]: {
       display: 'none',
     },

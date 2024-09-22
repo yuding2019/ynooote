@@ -39,7 +39,7 @@ const styles = stylex.create({
     },
   },
   info: {
-    width: '50%',
+    flex: 2,
     height: '100%',
     padding: `${SPACING.lg} 0`,
     position: 'relative',
@@ -79,22 +79,20 @@ const styles = stylex.create({
     animation: `${cursorFlash} 1.6s steps(1) infinite`,
   },
   content: {
-    width: '50%',
+    flex: 3,
     height: '100%',
     position: 'relative',
     overflow: 'auto',
     backgroundColor: THEME_TOKENS.lightBackgroundColor,
-    transition: 'width 0.3s ease-in',
+    transition: 'all 0.3s ease-in-out',
     [SCREEN_BREAK_POINT]: {
       width: '100%',
       height: 'fit-content',
     },
   },
   largeContent: {
-    width: '99%',
-    [SCREEN_BREAK_POINT]: {
-      width: '100%',
-    },
+    flex: 4,
+    backgroundColor: THEME_TOKENS.backgroundColor,
   },
   loadFont: {
     display: 'none',
