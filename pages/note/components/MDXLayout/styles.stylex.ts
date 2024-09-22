@@ -12,6 +12,7 @@ export const styles = stylex.create({
     paddingRight: SPACING.exl,
     paddingBottom: 128,
     maxWidth: 800,
+    minHeight: '100%',
     backgroundColor: THEME_TOKENS.lightBackgroundColor,
   },
   title: {

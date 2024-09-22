@@ -1,0 +1,179 @@
+import MDXPageLayout from './components/MDXLayout';
+
+export const meta = {
+  title: 'Docker 101',
+  tags: ['docker'],
+  img: '',
+};
+
+Docker 是一款开源的容器运行时，通过 Docker 构建的应用镜像，可以在任何支持 Docker 的平台上运行；Docker 统一了软件运行环境，方便开发、测试、部署。
+
+> Docker 只是容器运行时之一
+
+> 容器化是一种软件部署流程，可将应用程序的代码与应用程序在任何基础设施上运行所需的所有文件和库进行捆绑。
+> 参考文档：[AWS - 什么是容器化](https://aws.amazon.com/cn/what-is/containerization/)，[IBM - 什么是容器化](https://www.ibm.com/cn-zh/topics/containerization)
+
+# 初识 Docker
+
+下载安装 [Docker Desktop](https://www.docker.com/)，按照完成后命令行检测安装结果：
+
+```
+docker -v
+// -> Docker version 27.1.1, build 6312585
+```
+
+## Hello World
+
+用 nodejs 作为示例，创建一个镜像并运行。
+
+编写一个简单的 server.js：
+
+```js
+const http = require('node:http');
+const os = require('node:os');
+
+const server = http.createServer();
+
+server.on('request', (req, res) => {
+  if (req.url === '/') {
+    res.end('<h1>Hello World</h1>');
+    return;
+  }
+
+  if (req.url === '/about') {
+    res.end(
+      `<h1>platform: ${os.platform()}</h1><h1>machine: ${os.machine()}</h1>`
+    );
+    return;
+  }
+
+  return res.end('<h1>404</h1>');
+});
+
+server.listen(4000, () => {
+  console.log('server is running at http://localhost:4000');
+});
+```
+
+这个服务在宿主机上运行结果如下：
+
+![](/images/learn-docker_server-result.png)
+
+### 构建镜像
+
+编写 dockerfile，以此构建应用镜像：
+
+```
+# 使用 alpine linux 作为基础镜像，后续的 server 就运行在这个 Linux 中
+# 也可以使用其他 linux 发行版作为基础镜像，不过 alpine 非常小，很适合学习用
+FROM alpine:latest
+
+# 添加 nodejs
+RUN apk add nodejs
+
+# 从当前文件夹中将文件拷贝到镜像中
+COPY ./server.js /server.js
+
+# 暴露 4000 端口
+EXPOSE 4000
+
+# 默认命令，在启动容器时就会执行
+CMD ["node", "/server.js"]
+```
+
+在当前文件下启动命令行，执行：
+
+```
+docker build -f dockerfile -t simple-server .
+```
+
+> `-t` 就是给镜像打 tag，约等于镜像名称；最后的 `.` 是告诉 docker 当前构建上下文，copy 命令就是在指定的文件夹中执行。
+
+构建完成后就可以在 desktop 应用中看到这个镜像：
+![](/images/learn-docker_image.png)
+
+### 运行
+
+可以直接在 desktop 中对应镜像的右边点击运行按钮一键起飞，也可以使用下面的命令：
+
+```
+docker run -p 4000:4000 --name simple-server simple-server:latest
+```
+
+> `-p` 用于指定宿主机端口号和容器端口号的映射，最后的 `simple-server:latest` 即为上面构建好的镜像，冒号后面的是镜像版本，在构建时可以用 `-t <image_name>:<version>` 的形式指定，不指定就是默认 latest
+
+启动后可以看到运行结果如下：
+![](/images/learn-docker_image-run.png)
+
+可以看到 server 实际上就是运行在 Linux 系统上的，所以 images 其实可以被视为容器运行的系统（os 也是软件），每当启动一个容器时，就将指定的镜像运行在 docker 提供的平台上，
+如果镜像没有携带任何应用程序，那么以该镜像启动的容器其实可以被视为一个纯粹的 Linux 系统，类似于虚拟机，但远比虚拟机轻量。容器不会像虚拟机那样复制硬件层。
+
+# Dockerfile
+
+dockerfile 用于描述一个镜像构建中需要执行的命名。
+
+#### FROM
+
+开启一个构建阶段，并拉去指定的镜像。一个 dockerfile 可以有多个 FROM，即多个构建阶段。
+
+如果有多个 FROM，那么前面的 FROM 可以作为后面的构建阶段依赖，在某些场景下比较好用，比如在 alpine 中添加指定版本的 nodejs：
+
+```
+FROM node:14.18-alpine as node
+
+FROM alpine:latest
+
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
+...
+```
+
+多阶段构建可以减少最终镜像的大小，虽然前置阶段也会生成一个镜像，但是最终产物还是以最后一个阶段的产物为准。
+比如前端构建需要使用 nodejs 环境，如果单阶段构建的话，最终产物会包含 nodejs，但实际上前端应用运行时不需要 nodejs（当然除了 SSR），就浪费了空间；
+多阶段构建时，我们可以在最后一个阶段中将前置阶段的构建产物 copy 过来，那么最终产物就只有前端应用代码。
+
+```
+FROM node:14 as build
+
+RUN npm run build
+
+FROM alpine:latest
+
+COPY --from=build /dist /dist
+...
+```
+
+#### RUN
+
+简单明了，就是执行命令
+
+```
+RUN apk add nodejs # 按照最新版本nodejs
+RUN node -v
+RUN npm -v
+...
+```
+
+#### CMD
+
+指定容器启动后的默认执行指令，比如在示例中启动 server
+
+```
+CMD ["node", "server.js"]
+```
+
+如果镜像中不包含任何应用程序代码，就想启动一个 linux，那么需要在启动时添加如下参数
+
+```
+# 启动时需要添加 -it 参数
+# it 是 interactive 和 pseudo-tty，含义是启动容器进入交互模式并生成一个伪终端用于交互
+docker run -it <image_name>
+```
+
+> 其他信息请查阅[官方文档](https://docs.docker.com/reference/dockerfile/)
+
+export default ({ children }) => (
+  <MDXPageLayout meta={meta}>{children}</MDXPageLayout>
+);
