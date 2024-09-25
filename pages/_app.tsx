@@ -131,6 +131,7 @@ const App = ({ Component, pageProps }) => {
           type="image/x-icon"
         />
         <meta name="google-site-verification" content="HRWXPoUq-hDGzLwQlK8QNFBIAWM9E7OluBbNQPopMjQ" />
+        <meta name="google-adsense-account" content="ca-pub-9448338216770987" />
       </Head>
 
       <ContentNavigateProvider>
