@@ -2,6 +2,8 @@ import { FC, ReactNode } from 'react';
 
 import { MDXProvider } from '@mdx-js/react';
 import stylex from '@stylexjs/stylex';
+import { PhotoProvider } from 'react-photo-view';
+import 'react-photo-view/dist/react-photo-view.css';
 
 import Anchor from './Anchor';
 import Blockquote from './Blockquote';
@@ -43,7 +45,9 @@ const MDXLayout: FC<MDXLayoutProps> = (props) => {
   return (
     <div {...stylex.props(styles.wrapper)}>
       <div {...stylex.props(styles.title)}>{meta?.title}</div>
-      <MDXProvider components={MDX_COMPONENTS}>{children}</MDXProvider>
+      <PhotoProvider>
+        <MDXProvider components={MDX_COMPONENTS}>{children}</MDXProvider>
+      </PhotoProvider>
     </div>
   );
 };

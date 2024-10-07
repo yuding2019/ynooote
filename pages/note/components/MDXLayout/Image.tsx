@@ -1,4 +1,5 @@
 import stylex from '@stylexjs/stylex';
+import { PhotoView } from 'react-photo-view';
 
 import { MDXComponentProps } from './types';
 
@@ -10,7 +11,9 @@ const Image: React.FC<MDXComponentProps & { src: string; alt?: string }> = (
   const { src, alt } = props;
 
   return (
-    <img {...stylex.props(mdxComponentStyles.image)} src={src} alt={alt} />
+    <PhotoView src={src}>
+      <img {...stylex.props(mdxComponentStyles.image)} src={src} alt={alt} />
+    </PhotoView>
   );
 };
 
