@@ -1,0 +1,111 @@
+import MDXPageLayout from './components/MDXLayout';
+
+export const meta = {
+  title: '在 vscode 中运行 spring 项目',
+  tags: ['vscode'],
+  img: '',
+};
+
+最近要写一写后端，但是不想用 IDEA，所以折腾一下 vscode，在 vscode 里面运行 spring 项目。
+
+折腾 vscode 前，需要在电脑中安装：
+- 对应版本的 JDK
+- Maven（如果是 Maven 项目的话才需要安装）
+
+# 安装扩展
+
+微软、红帽子、vmware等公司已经为我们准备好了一系列的 extension pack，一键安装：
+- [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)：必装
+- [Spring Boot Extension Pack](https://marketplace.visualstudio.com/items?itemName=vmware.vscode-boot-dev-pack)：选装，一般要新建项目时有用一点
+
+每个 pack 中包含了官方推荐的 extension，其中最重要的是 [Language Support for Java(TM) by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.java)，
+包含在 Extension Pack for Java 中，因为它提供了语言和 lombok 的支持。
+
+# vscode 配置
+
+安装完成后，需要配置一下环境设置，告诉这些扩展在哪儿找到 jdk 和 Maven，在 setting.json 中添加：
+
+
+```js
+{
+  // 配置通用的java runtime
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-1.8",
+      // 比如：/Users/xxx/.sdkman/candidates/java/8.0.412-zulu/zulu-8.jdk/Contents/Home
+      "path": "{path-to-your-java-home}",
+      "default": true
+    }
+  ],
+  // 配置通用的maven setting
+  // 比如：/Users/xxx/.m2/maven.setting.xml
+  "java.configuration.maven.userSettings": "{path-to-your-maven-setting-xml}",
+  // 选配，开启后可以在方法上看到引用信息
+  "java.referencesCodeLens.enabled": true,
+}
+```
+
+配置好了之后，可能需要重新打开一次 vscode，在没问题的情况下，应该在左侧的 explorer 中应该有 java project 被正确识别
+
+![](/images/run-spring-project-in-vscode/explorer.png)
+
+# 运行配置
+
+后端项目启动时会加载各种配置，比如服务端口号、redis、数据库等。不同项目配置不一样，一般在项目的 resources 文件目录下。
+
+举个例子，比如本地开发环境配置是写在 bootstrap-local.yml 中，那么在启动项目时需要告诉 spring 加载这个 local 文件配置。
+
+这个配置可以在 vscode 的 .vscode/launch.json 文件中配置，可以手动创建，也可以在 vscode 侧边栏中自动创建：
+
+![](/images/run-spring-project-in-vscode/launch.png)
+
+内容如下：
+
+```js
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Application",
+      "request": "launch",
+      // 指定 main class 文件
+      "mainClass": "com.xxx.xxx.xxx.Application",
+      "projectName": "project",
+      // vm启动参数，这里指定服务启动时的 profiles 加载 local.yml 的配置
+      "vmArgs": "-Dspring.profiles.active=local"
+    }
+  ]
+}
+```
+
+然后就可以按 F5 一键起飞：
+
+![](/images/run-spring-project-in-vscode/run.png)
+
+# 本地联调接口
+
+可以使用 postman，也可以用 [REST client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) 扩展，直接在 vscode 中发请求
+
+![](/images/run-spring-project-in-vscode/rest-client.png)
+
+新建一个后缀为 .http 的文件，写上请求方法、url、http协议版本、headers、body等信息就可以发起请求了
+
+```
+POST http://localhost:8212/api/perf/activity/listActivity?bus=20 HTTP/1.1
+content-type: application/json
+hcm-user: {"uid": 103257, "entId": 275, "buId": 276}
+
+{
+  "loginType": "10",
+  "activityStatus": 2,
+  "pageNum": 1,
+  "pageSize": 30
+  ...
+}
+```
+
+![](/images/run-spring-project-in-vscode/send-request.png)
+
+> body 一定要和前面的内容隔一行
+
+export default ({ children }) => <MDXPageLayout meta={meta}>{children}</MDXPageLayout>;
